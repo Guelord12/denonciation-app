@@ -23,12 +23,11 @@ const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'denonciation_rdc_secret_2025';
 
 // Base de données
+const { Pool } = require('pg');
+
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'denonciation-app',
-  password: 'Olgambukula20',
-  port: 5433,
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
 
 // Middleware
