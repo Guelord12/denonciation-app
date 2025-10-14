@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installer l'Application - Dénonciation RDC</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        .install-container {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 90%;
+            margin: 2rem auto;
+        }
+        
+        .app-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border-radius: 20px;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+        }
+        
+        .description {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .install-btn {
+            background: linear-gradient(135deg, #27ae60, #219653);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .install-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(39, 174, 96, 0.3);
+        }
+        
+        .install-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .instructions {
+            text-align: left;
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+        
+        .instructions h3 {
+            margin-bottom: 1rem;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .instructions ol {
+            margin-left: 1.5rem;
+        }
+        
+        .instructions li {
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+        
+        .browser-link {
+            display: block;
+            margin-top: 1rem;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .compatibility {
+            background: #e8f4fd;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: left;
+        }
+        
+        .test-accounts {
+            background: #fff3cd;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: left;
+        }
+        
+        .footer {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        #install-status {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .status-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .manual-steps {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            text-align: left;
+            display: none;
+        }
+        
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; margin: 0;">
+    <div class="install-container">
+        <div class="app-icon">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        
+        <h1>Dénonciation RDC</h1>
+        <p class="description">
+            Application de signalement des violations et bavures en République Démocratique du Congo. Sécurisée, anonyme et citoyenne.
+        </p>
+        
+        <div id="install-button">
+            <button class="install-btn" onclick="installApp()" id="installBtn">
+                <i class="fas fa-download"></i> Installer l'Application
+            </button>
+            <div id="install-status" class="status-info">
+                <i class="fas fa-info-circle"></i> L'application peut être installée sur votre appareil
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3><i class="fas fa-info-circle"></i> Instructions d'installation</h3>
+            <ol>
+                <li>Cliquez sur "Installer l'Application"</li>
+                <li>Suivez les instructions de votre navigateur</li>
+                <li>L'application sera ajoutée à votre écran d'accueil</li>
+                <li>Ouvrez l'application comme une vraie app mobile</li>
+            </ol>
+        </div>
+
+        <div class="manual-steps" id="manualSteps">
+            <h4><i class="fas fa-mobile-alt"></i> Installation Manuelle</h4>
+            <div class="step"><i class="fas fa-check" style="color: #27ae60;"></i> <span>Ouvrez le menu de votre navigateur</span></div>
+            <div class="step"><i class="fas fa-check" style="color: #27ae60;"></i> <span>Sélectionnez "Ajouter à l'écran d'accueil"</span></div>
+            <div class="step"><i class="fas fa-check" style="color: #27ae60;"></i> <span>Confirmez l'installation</span></div>
+        </div>
+        
+        <div class="compatibility">
+            <h4><i class="fas fa-check-circle"></i> Compatibilité</h4>
+            <p><strong>✅ Android:</strong> Chrome, Samsung Internet, Firefox</p>
+            <p><strong>✅ iOS:</strong> Safari (iOS 12.2+)</p>
+            <p><strong>✅ Desktop:</strong> Tous navigateurs modernes</p>
+        </div>
+
+        <div style="margin: 1.5rem 0;">
+            <a href="../" class="browser-link">
+                <i class="fas fa-external-link-alt"></i> Utiliser dans le navigateur
+            </a>
+        </div>
+
+        <div class="test-accounts">
+            <h4><i class="fas fa-users"></i> Comptes de Test</h4>
+            <p><strong>Pour tester l'application:</strong></p>
+            <ul>
+                <li><strong>Numéro:</strong> +243810000001</li>
+                <li><strong>Code:</strong> Vérifiez dans les codes de vérification</li>
+                <li><strong>Accès:</strong> Toutes les fonctionnalités disponibles</li>
+            </ul>
+        </div>
+        
+        <div class="footer">
+            <p><strong>By Ir Guelord KAYAYA</strong></p>
+            <p>Copyright 2025 | Fonctionnement Exclusive en RDC</p>
+            <p><i class="fas fa-envelope"></i> kayayaguelord8@gmail.com</p>
+        </div>
+    </div>
+
+    <script>
+        let deferredPrompt;
+        let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        let isAndroid = /Android/.test(navigator.userAgent);
+        let isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+
+        // ✅ DÉTECTION AUTOMATIQUE DE L'ENVIRONNEMENT
+        function detectEnvironment() {
+            const statusElement = document.getElementById('install-status');
+            const installBtn = document.getElementById('installBtn');
+            const manualSteps = document.getElementById('manual-steps');
+
+            if (isStandalone) {
+                statusElement.innerHTML = '<i class="fas fa-check-circle" style="color: #27ae60;"></i> ✅ Application déjà installée!';
+                statusElement.className = 'status-success';
+                installBtn.disabled = true;
+                installBtn.innerHTML = '<i class="fas fa-check"></i> Déjà Installée';
+                return;
+            }
+
+            if (isIOS) {
+                statusElement.innerHTML = '<i class="fas fa-info-circle"></i> 📱 Sur iOS: Safari → Partager → Sur l\'écran d\'accueil';
+                statusElement.className = 'status-info';
+                manualSteps.style.display = 'block';
+            } else if (isAndroid) {
+                statusElement.innerHTML = '<i class="fas fa-info-circle"></i> 🤖 Sur Android: Menu → Ajouter à l\'écran d\'accueil';
+                statusElement.className = 'status-info';
+                manualSteps.style.display = 'block';
+            } else {
+                statusElement.innerHTML = '<i class="fas fa-info-circle"></i> 💻 Sur ordinateur: Utilisez le menu de votre navigateur';
+                statusElement.className = 'status-info';
+            }
+        }
+
+        // ✅ GESTION DE L'INSTALLATION PWA
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            const statusElement = document.getElementById('install-status');
+            statusElement.innerHTML = '<i class="fas fa-download" style="color: #27ae60;"></i> ✅ Prêt à installer! Cliquez sur le bouton ci-dessus.';
+            statusElement.className = 'status-success';
+            
+            document.getElementById('manual-steps').style.display = 'none';
+        });
+
+        // ✅ FONCTION D'INSTALLATION PRINCIPALE
+        function installApp() {
+            if (deferredPrompt) {
+                // Installation PWA standard
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        showInstallSuccess();
+                    } else {
+                        showManualInstructions();
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                // Instructions manuelles
+                showManualInstructions();
+            }
+        }
+
+        // ✅ SUCCÈS DE L'INSTALLATION
+        function showInstallSuccess() {
+            const statusElement = document.getElementById('install-status');
+            statusElement.innerHTML = '<i class="fas fa-check-circle" style="color: #27ae60;"></i> 🎉 Application installée avec succès!';
+            statusElement.className = 'status-success';
+            
+            const installBtn = document.getElementById('installBtn');
+            installBtn.disabled = true;
+            installBtn.innerHTML = '<i class="fas fa-check"></i> Installée';
+            
+            document.getElementById('manual-steps').style.display = 'none';
+        }
+
+        // ✅ AFFICHAGE DES INSTRUCTIONS MANUELLES
+        function showManualInstructions() {
+            const statusElement = document.getElementById('install-status');
+            
+            if (isIOS) {
+                statusElement.innerHTML = `
+                    <i class="fas fa-mobile-alt"></i> 📱 <strong>Instructions iOS:</strong><br>
+                    1. Tapotez l'icône de partage <i class="fas fa-share"></i><br>
+                    2. Faites défiler vers le bas<br>
+                    3. Sélectionnez "Sur l'écran d'accueil"<br>
+                    4. Confirmez l'ajout
+                `;
+            } else if (isAndroid) {
+                statusElement.innerHTML = `
+                    <i class="fas fa-mobile-alt"></i> 🤖 <strong>Instructions Android:</strong><br>
+                    1. Ouvrez le menu (3 points) <i class="fas fa-ellipsis-v"></i><br>
+                    2. Sélectionnez "Ajouter à l'écran d'accueil"<br>
+                    3. Confirmez l'installation<br>
+                    4. L'app apparaît sur votre écran
+                `;
+            } else {
+                statusElement.innerHTML = `
+                    <i class="fas fa-desktop"></i> 💻 <strong>Instructions Ordinateur:</strong><br>
+                    1. Cherchez l'icône d'installation dans la barre d'adresse<br>
+                    2. Ou utilisez le menu du navigateur<br>
+                    3. Sélectionnez "Installer Dénonciation RDC"<br>
+                    4. Confirmez l'installation
+                `;
+            }
+            
+            statusElement.className = 'status-info';
+            document.getElementById('manual-steps').style.display = 'block';
+        }
+
+        // ✅ DÉTECTION SI L'APP EST DÉJÀ INSTALLÉE
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('🎉 Application installée avec succès!');
+            showInstallSuccess();
+        });
+
+        // ✅ INITIALISATION AU CHARGEMENT
+        document.addEventListener('DOMContentLoaded', function() {
+            detectEnvironment();
+            
+            // Vérifier périodiquement si l'installation devient disponible
+            setTimeout(detectEnvironment, 2000);
+        });
+
+        // ✅ SERVICE WORKER REGISTRATION (pour les fonctionnalités hors ligne)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('✅ Service Worker enregistré avec succès:', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('❌ Échec enregistrement Service Worker:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#e74c3c">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Dénonciation RDC</title>
+    
+    <!-- Icons pour iOS -->
+    <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+    <link rel="apple-touch-startup-image" href="assets/splash/ios-splash.png">
+    
+    <!-- Icons pour Android -->
+    <link rel="icon" type="image/png" href="assets/icons/icon-192.png">
+    <link rel="manifest" href="manifest.json">
+    
+    <style>
+        /* Reset et styles de base pour mobile */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            overflow-x: hidden;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        }
+        
+        /* Safe area pour iPhone X et supérieurs */
+        .safe-area {
+            padding-top: constant(safe-area-inset-top);
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: constant(safe-area-inset-bottom);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        
+        /* Header mobile */
+        .mobile-header {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 15px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        /* Navigation mobile */
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #e0e0e0;
+            z-index: 1000;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 0.8rem;
+            padding: 5px 10px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item.active {
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+        }
+        
+        .nav-icon {
+            font-size: 1.2rem;
+            margin-bottom: 2px;
+        }
+        
+        /* Contenu principal */
+        .main-content {
+            margin-top: 60px;
+            margin-bottom: 70px;
+            min-height: calc(100vh - 130px);
+            padding: 15px;
+            overflow-y: auto;
+        }
+        
+        /* Cards mobiles */
+        .mobile-card {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-card:active {
+            transform: scale(0.98);
+        }
+        
+        /* Boutons mobiles */
+        .mobile-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .mobile-btn:active {
+            transform: scale(0.95);
+            opacity: 0.9;
+        }
+        
+        .mobile-btn-outline {
+            background: transparent;
+            border: 2px solid #e74c3c;
+            color: #e74c3c;
+        }
+        
+        /* Formulaires mobiles */
+        .mobile-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .mobile-input:focus {
+            outline: none;
+            border-color: #e74c3c;
+        }
+        
+        /* Modals mobiles */
+        .mobile-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        /* Liste des signalements */
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .post-item {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .post-type {
+            background: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .post-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .post-meta {
+            color: #666;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        /* Loading spinner */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #e74c3c;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .mobile-header {
+                padding: 15px 10px;
+            }
+            
+            .main-content {
+                padding: 10px;
+            }
+        }
+        
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #121212;
+                color: #ffffff;
+            }
+            
+            .mobile-card, .post-item {
+                background: #1e1e1e;
+                color: #ffffff;
+            }
+            
+            .mobile-input {
+                background: #2d2d2d;
+                border-color: #404040;
+                color: #ffffff;
+            }
+            
+            .mobile-nav {
+                background: #1e1e1e;
+                border-color: #333;
+            }
+            
+            .nav-item {
+                color: #888;
+            }
+            
+            .nav-item.active {
+                color: #e74c3c;
+            }
+        }
+    </style>
+</head>
+<body class="safe-area">
+    <!-- Header Mobile -->
+    <header class="mobile-header">
+        <div class="header-title">
+            <i class="fas fa-shield-alt"></i>
+            <span>Dénonciation RDC</span>
+        </div>
+        <div class="header-actions">
+            <button id="menu-btn" class="mobile-btn" style="padding: 8px; background: transparent;">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Contenu Principal -->
+    <main class="main-content">
+        <!-- Page d'accueil -->
+        <div id="home-page" class="page active">
+            <div class="welcome-section">
+                <h2 style="margin-bottom: 10px;">Bienvenue 👋</h2>
+                <p style="color: #666; margin-bottom: 20px;">Plateforme sécurisée de signalement</p>
+            </div>
+
+            <div style="margin: 20px 0;">
+                <button class="mobile-btn" onclick="app.showPage('report')">
+                    <i class="fas fa-flag"></i> Nouveau Signalement
+                </button>
+            </div>
+
+            <div class="stats-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0;">
+                <div class="mobile-card" style="text-align: center;">
+                    <div style="font-size: 1.5rem; color: #e74c3c; margin-bottom: 5px;">📊</div>
+                    <div style="font-size: 0.9rem; color: #666;">Signalements</div>
+                    <div id="total-posts" style="font-weight: bold; font-size: 1.2rem;">0</div>
+                </div>
+                <div class="mobile-card" style="text-align: center;">
+                    <div style="font-size: 1.5rem; color: #3498db; margin-bottom: 5px;">👥</div>
+                    <div style="font-size: 0.9rem; color: #666;">Utilisateurs</div>
+                    <div id="total-users" style="font-weight: bold; font-size: 1.2rem;">0</div>
+                </div>
+            </div>
+
+            <h3 style="margin: 20px 0 10px 0;">Signalements Récents</h3>
+            <div id="posts-container" class="post-list">
+                <div class="loading">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page de signalement -->
+        <div id="report-page" class="page">
+            <div style="margin-bottom: 20px;">
+                <button class="mobile-btn mobile-btn-outline" onclick="app.showPage('home')">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </button>
+            </div>
+
+            <h2 style="margin-bottom: 20px;">Nouveau Signalement</h2>
+
+            <form id="report-form">
+                <select class="mobile-input" id="report-type" required>
+                    <option value="">Type de violation</option>
+                    <option value="corruption">Corruption</option>
+                    <option value="viol">Viol</option>
+                    <option value="vole">Vol</option>
+                    <option value="arrestation_arbitraire">Arrestation Arbitraire</option>
+                    <option value="agressions">Agressions</option>
+                    <option value="enlevement">Enlèvement</option>
+                    <option value="autres">Autres</option>
+                </select>
+
+                <input type="text" class="mobile-input" id="report-title" placeholder="Titre du signalement" required>
+
+                <textarea class="mobile-input" id="report-description" placeholder="Description détaillée..." rows="4" required></textarea>
+
+                <input type="text" class="mobile-input" id="report-location" placeholder="Localisation">
+
+                <div style="margin-bottom: 15px;">
+                    <button type="button" class="mobile-btn mobile-btn-outline" onclick="app.getLocation()" style="margin-bottom: 10px;">
+                        <i class="fas fa-location-arrow"></i> Utiliser ma position
+                    </button>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <input type="file" id="report-evidence" accept="image/*,video/*" style="display: none;">
+                    <button type="button" class="mobile-btn mobile-btn-outline" onclick="document.getElementById('report-evidence').click()">
+                        <i class="fas fa-camera"></i> Ajouter une preuve
+                    </button>
+                    <div id="file-name" style="font-size: 0.9rem; color: #666; margin-top: 5px;"></div>
+                </div>
+
+                <button type="submit" class="mobile-btn">
+                    <i class="fas fa-paper-plane"></i> Publier le Signalement
+                </button>
+            </form>
+        </div>
+
+        <!-- Page carte -->
+        <div id="map-page" class="page">
+            <div style="margin-bottom: 20px;">
+                <button class="mobile-btn mobile-btn-outline" onclick="app.showPage('home')">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </button>
+            </div>
+
+            <h2 style="margin-bottom: 20px;">Carte des Signalements</h2>
+
+            <div id="map-container" style="height: 400px; background: #f0f0f0; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #666;">
+                <div style="text-align: center;">
+                    <i class="fas fa-map-marked-alt" style="font-size: 3rem; margin-bottom: 10px;"></i>
+                    <p>Carte interactive</p>
+                    <p style="font-size: 0.9rem;">Chargement...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Page profil -->
+        <div id="profile-page" class="page">
+            <div style="margin-bottom: 20px;">
+                <button class="mobile-btn mobile-btn-outline" onclick="app.showPage('home')">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </button>
+            </div>
+
+            <div class="mobile-card" style="text-align: center;">
+                <div style="width: 80px; height: 80px; background: #e74c3c; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; color: white; font-size: 2rem;">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h3 id="profile-username">Utilisateur</h3>
+                <p id="profile-phone" style="color: #666; margin-bottom: 20px;">+243 ...</p>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                    <div>
+                        <div style="font-weight: bold; font-size: 1.2rem;" id="user-posts">0</div>
+                        <div style="color: #666; font-size: 0.9rem;">Signalements</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: bold; font-size: 1.2rem;" id="user-comments">0</div>
+                        <div style="color: #666; font-size: 0.9rem;">Commentaires</div>
+                    </div>
+                </div>
+
+                <button class="mobile-btn mobile-btn-outline" onclick="app.logout()" style="margin-bottom: 10px;">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Navigation Mobile -->
+    <nav class="mobile-nav">
+        <a href="#" class="nav-item active" data-page="home">
+            <i class="fas fa-home nav-icon"></i>
+            <span>Accueil</span>
+        </a>
+        <a href="#" class="nav-item" data-page="report">
+            <i class="fas fa-flag nav-icon"></i>
+            <span>Signaler</span>
+        </a>
+        <a href="#" class="nav-item" data-page="map">
+            <i class="fas fa-map nav-icon"></i>
+            <span>Carte</span>
+        </a>
+        <a href="#" class="nav-item" data-page="profile">
+            <i class="fas fa-user nav-icon"></i>
+            <span>Profil</span>
+        </a>
+    </nav>
+
+    <!-- Modals -->
+    <div id="auth-modal" class="mobile-modal" style="display: none;">
+        <div class="modal-content">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 60px; height: 60px; background: #e74c3c; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; color: white; font-size: 1.5rem;">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Connexion</h3>
+            </div>
+
+            <form id="login-form">
+                <input type="tel" class="mobile-input" id="login-phone" placeholder="+243 XX XXX XXXX" required>
+                <input type="text" class="mobile-input" id="login-code" placeholder="Code de vérification" required>
+                
+                <button type="submit" class="mobile-btn" style="margin-bottom: 15px;">
+                    <i class="fas fa-sign-in-alt"></i> Se Connecter
+                </button>
+            </form>
+
+            <div style="text-align: center;">
+                <p style="margin-bottom: 10px; color: #666;">Nouveau utilisateur?</p>
+                <button class="mobile-btn mobile-btn-outline" onclick="app.showRegister()">
+                    <i class="fas fa-user-plus"></i> Créer un compte
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="register-modal" class="mobile-modal" style="display: none;">
+        <div class="modal-content">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 60px; height: 60px; background: #e74c3c; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; color: white; font-size: 1.5rem;">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h3>Inscription</h3>
+            </div>
+
+            <form id="register-form">
+                <input type="tel" class="mobile-input" id="reg-phone" placeholder="+243810000000" required>
+                <input type="text" class="mobile-input" id="reg-username" placeholder="Nom d'utilisateur" required>
+                
+                <button type="submit" class="mobile-btn" style="margin-bottom: 15px;">
+                    <i class="fas fa-user-plus"></i> S'inscrire
+                </button>
+            </form>
+
+            <div style="text-align: center;">
+                <button class="mobile-btn mobile-btn-outline" onclick="app.showLogin()">
+                    <i class="fas fa-arrow-left"></i> Retour à la connexion
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <script src="bundle.js"></script>
+</body>
+</html>

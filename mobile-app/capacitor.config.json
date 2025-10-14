@@ -1,0 +1,16 @@
+{
+  "appId": "com.guelord.denonciationrdc",
+  "appName": "Dénonciation RDC", 
+  "webDir": "dist",
+  "server": {
+    "url": "http://192.168.160.90:3000",
+    "cleartext": true
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 3000,
+      "launchAutoHide": true,
+      "backgroundColor": "#e74c3c"
+    }
+  }
+}

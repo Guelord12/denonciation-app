@@ -1,0 +1,17 @@
+📱 DÉNONCIATION RDC - GUIDE D'INSTALLATION
+
+1️⃣ INSTALLER L'APK :
+• Transférer app-debug.apk sur votre téléphone
+• Autoriser "Sources inconnues" si demandé
+• Installer l'application
+
+2️⃣ CONFIGURATION RÉSEAU :
+• Se connecter au MÊME WiFi que l'ordinateur serveur
+• Vérifier que le serveur tourne (192.168.160.90:3000)
+
+3️⃣ UTILISATION :
+• Lancer l'application
+• S'inscrire avec numéro de téléphone
+• Commencer à utiliser !
+
+📞 Support : [Votre contact]

@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.guelord.denonciationrdc" version="1.0.0" xmlns="http://www.w3.org/ns/widgets">
+    <name>Dénonciation RDC</name>
+    <description>Application de dénonciation des violations en RDC</description>
+    <author email="kayayaguelord8@gmail.com" href="https://github.com/guelord">
+        Ir Guelord KAYAYA
+    </author>
+    
+    <content src="index.html" />
+    <access origin="*" />
+    
+    <preference name="ScrollEnabled" value="false" />
+    <preference name="android-minSdkVersion" value="22" />
+    <preference name="Orientation" value="portrait" />
+    
+    <platform name="android">
+        <icon src="res/icon/android/icon-96-xhdpi.png" />
+        <splash src="res/screen/android/splash-port-hdpi.png" />
+    </platform>
+    
+    <platform name="ios">
+        <icon src="res/icon/ios/icon-60.png" />
+        <splash src="res/screen/ios/splash-port-iphone.png" />
+    </platform>
+    
+    <plugin name="cordova-plugin-geolocation" spec="^4.1.0" />
+    <plugin name="cordova-plugin-camera" spec="^6.0.0" />
+    <plugin name="cordova-plugin-file" spec="^7.0.0" />
+</widget>

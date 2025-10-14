@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "install:capacitor": "npm install @capacitor/core @capacitor/cli",
+    "init:capacitor": "npx cap init denonciation-rdc com.guelord.denonciationrdc",
+    "add:android": "npx cap add android",
+    "add:ios": "npx cap add ios",
+    "build:web": "npm run build",
+    "sync:android": "npx cap sync android",
+    "sync:ios": "npx cap sync ios",
+    "open:android": "npx cap open android",
+    "open:ios": "npx cap open ios",
+    "build:apk": "cd android && ./gradlew assembleDebug",
+    "build:release": "cd android && ./gradlew assembleRelease"
+  }
+}

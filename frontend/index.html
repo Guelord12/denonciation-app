@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dénonciation RDC - Connexion</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        .reconnect-section {
+            text-align: center;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .comments-section {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .comment {
+            background: white;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .comment-user {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .comment-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .comment-content {
+            margin-bottom: 0.5rem;
+        }
+        
+        .comment-evidence {
+            max-width: 200px;
+            margin: 0.5rem 0;
+            border-radius: 4px;
+        }
+        
+        .comment-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .reply-btn {
+            background: none;
+            border: none;
+            color: #3498db;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .reply-form {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+        
+        .replies-section {
+            margin-left: 2rem;
+            margin-top: 1rem;
+            border-left: 2px solid #3498db;
+            padding-left: 1rem;
+        }
+    </style>
+</head>
+<body class="auth-page">
+    <!-- Modal de Connexion -->
+    <div id="login-modal" class="modal active">
+        <div class="modal-content auth-modal">
+            <div class="auth-header">
+                <div class="app-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h2>Connexion</h2>
+                <p>Accédez à votre compte Dénonciation RDC</p>
+            </div>
+            
+            <form id="login-form" class="auth-form">
+                <div class="form-group">
+                    <label for="login-phone">Numéro de Téléphone</label>
+                    <input type="tel" id="login-phone" placeholder="+243 XX XXX XXXX" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-code">Code de Vérification</label>
+                    <input type="text" id="login-code" placeholder="Code reçu par SMS" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-large">
+                    <i class="fas fa-sign-in-alt"></i> Se Connecter
+                </button>
+            </form>
+            
+            <!-- SECTION RECONNEXION POUR ANCIENS UTILISATEURS -->
+            <div class="reconnect-section">
+                <p>Ancien utilisateur sans code?</p>
+                <button type="button" id="request-reconnect" class="btn btn-outline">
+                    <i class="fas fa-sync-alt"></i> Demander un nouveau code
+                </button>
+            </div>
+            
+            <div class="auth-footer">
+                <p>Nouveau utilisateur? <a href="#" id="show-register">Créer un compte</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal d'Inscription -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content auth-modal">
+            <div class="auth-header">
+                <div class="app-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h2>Inscription</h2>
+                <p>Créez votre compte Dénonciation RDC</p>
+            </div>
+            
+            <form id="register-form" class="auth-form">
+                <div class="form-group">
+                    <label for="reg-phone">Numéro de Téléphone</label>
+                    <input type="tel" id="reg-phone" placeholder="+243810000000" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reg-username">Nom d'utilisateur</label>
+                    <input type="text" id="reg-username" placeholder="Choisissez un nom d'utilisateur" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-large">
+                    <i class="fas fa-user-plus"></i> S'inscrire
+                </button>
+            </form>
+            
+            <div class="auth-footer">
+                <p>Déjà inscrit? <a href="#" id="show-login">Se connecter</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Principale (cachée au début) -->
+    <div id="main-app" class="hidden">
+        <header class="header">
+            <div class="container">
+                <div class="logo">
+                    <h1><i class="fas fa-shield-alt"></i> Dénonciation RDC</h1>
+                </div>
+                <nav class="nav">
+                    <a href="#" class="nav-link active" data-page="home">Accueil</a>
+                    <a href="#" class="nav-link" data-page="report">Signaler</a>
+                    <a href="#" class="nav-link" data-page="map">Carte</a>
+                    <a href="#" class="nav-link" data-page="stats">Statistiques</a>
+                    <a href="#" class="nav-link" data-page="contact">Contact</a>
+                    <div class="user-menu">
+                        <span id="username-display"></span>
+                        <button id="logout-btn" class="btn btn-outline">
+                            <i class="fas fa-sign-out-alt"></i> Déconnexion
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- Page d'accueil -->
+            <div id="home-page" class="page active">
+                <section class="hero">
+                    <div class="container">
+                        <h2>Bienvenue, <span id="welcome-username"></span> !</h2>
+                        <p>Plateforme sécurisée pour dénoncer les violations en RDC</p>
+                        <button class="btn btn-large btn-primary" data-page="report">
+                            Faire un Signalement <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </section>
+
+                <section class="features">
+                    <div class="container">
+                        <h3>Types de Violations</h3>
+                        <div class="features-grid">
+                            <div class="feature-card" data-type="corruption">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <h4>Corruption</h4>
+                            </div>
+                            <div class="feature-card" data-type="viol">
+                                <i class="fas fa-female"></i>
+                                <h4>Viol</h4>
+                            </div>
+                            <div class="feature-card" data-type="vole">
+                                <i class="fas fa-gem"></i>
+                                <h4>Vol</h4>
+                            </div>
+                            <div class="feature-card" data-type="arrestation_arbitraire">
+                                <i class="fas fa-handcuffs"></i>
+                                <h4>Arrestation Arbitraire</h4>
+                            </div>
+                            <div class="feature-card" data-type="agressions">
+                                <i class="fas fa-user-injured"></i>
+                                <h4>Agressions</h4>
+                            </div>
+                            <div class="feature-card" data-type="enlevement">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <h4>Enlèvement</h4>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="recent-posts">
+                    <div class="container">
+                        <h3>Signalements Récents</h3>
+                        <div id="posts-container" class="posts-grid">
+                            <!-- Chargement dynamique -->
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Page de signalement -->
+            <div id="report-page" class="page">
+                <div class="container">
+                    <h2><i class="fas fa-flag"></i> Nouveau Signalement</h2>
+                    <form id="report-form" class="report-form">
+                        <div class="form-group">
+                            <label for="report-type">Type de Violation *</label>
+                            <select id="report-type" required>
+                                <option value="">Sélectionnez un type</option>
+                                <option value="corruption">Corruption</option>
+                                <option value="viol">Viol</option>
+                                <option value="vole">Vol</option>
+                                <option value="arrestation_arbitraire">Arrestation Arbitraire</option>
+                                <option value="agressions">Agressions</option>
+                                <option value="enlevement">Enlèvement</option>
+                                <option value="autres">Autres</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="report-title">Titre *</label>
+                            <input type="text" id="report-title" placeholder="Titre clair du signalement" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="report-description">Description *</label>
+                            <textarea id="report-description" placeholder="Décrivez en détail ce qui s'est passé..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="report-location">Localisation</label>
+                            <input type="text" id="report-location" placeholder="Lieu exact ou approximatif">
+                            <button type="button" id="get-location" class="btn btn-outline">
+                                <i class="fas fa-location-arrow"></i> Utiliser ma position
+                            </button>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="report-evidence">Preuve (Image/Vidéo/Document) *</label>
+                            <input type="file" id="report-evidence" accept="image/*,video/*,.pdf,.doc,.docx" required>
+                            <small>Formats acceptés: JPG, PNG, GIF, MP4, PDF, DOC (max 50MB)</small>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-large">
+                            <i class="fas fa-paper-plane"></i> Publier le Signalement
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Page carte -->
+            <div id="map-page" class="page">
+                <div class="container">
+                    <h2><i class="fas fa-map-marked-alt"></i> Carte des Signalements</h2>
+                    <div id="map" class="map-container">
+                        <div class="map-placeholder">
+                            <i class="fas fa-map"></i>
+                            <h3>Carte Interactive</h3>
+                            <p>Visualisation des signalements en temps réel</p>
+                            <button class="btn btn-primary" onclick="loadMapData()">
+                                <i class="fas fa-sync"></i> Charger la Carte
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page statistiques -->
+            <div id="stats-page" class="page">
+                <div class="container">
+                    <h2><i class="fas fa-chart-bar"></i> Statistiques</h2>
+                    <div class="stats-container">
+                        <div class="stats-grid" id="stats-grid">
+                            <!-- Statistiques dynamiques -->
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="stats-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page contact -->
+            <div id="contact-page" class="page">
+                <div class="container">
+                    <h2><i class="fas fa-envelope"></i> Contact & Assistance</h2>
+                    <div class="contact-content">
+                        <div class="contact-info">
+                            <h3><i class="fas fa-headset"></i> Support Technique</h3>
+                            <p>En cas de problème avec l'application:</p>
+                            <div class="contact-item">
+                                <i class="fas fa-envelope"></i>
+                                <span>kayayaguelord8@gmail.com</span>
+                            </div>
+                            
+                            <div class="ai-assistance">
+                                <h4><i class="fas fa-robot"></i> Assistance IA</h4>
+                                <div class="ai-chat">
+                                    <div id="ai-messages" class="ai-messages">
+                                        <div class="ai-message bot">
+                                            <strong>Assistant IA:</strong> Bonjour! Comment puis-je vous aider?
+                                        </div>
+                                    </div>
+                                    <div class="ai-input">
+                                        <input type="text" id="ai-question" placeholder="Posez votre question...">
+                                        <button id="ai-send" class="btn btn-primary">
+                                            <i class="fas fa-paper-plane"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <form id="contact-form" class="contact-form">
+                            <h3><i class="fas fa-paper-plane"></i> Envoyer un Message</h3>
+                            <div class="form-group">
+                                <input type="text" id="contact-name" placeholder="Votre nom" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" id="contact-email" placeholder="Votre email" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="contact-subject" placeholder="Sujet" required>
+                            </div>
+                            <div class="form-group">
+                                <textarea id="contact-message" placeholder="Votre message..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-envelope"></i> Envoyer le Message
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h4>Dénonciation RDC</h4>
+                        <p>Plateforme citoyenne de signalement</p>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Mentions</h4>
+                        <p>By Ir Guelord KAYAYA</p>
+                        <p>Copyright 2025</p>
+                        <p>Fonctionnement Exclusive en RDC</p>
+                    </div>
+                    <div class="footer-section">
+                        <h4>Liens Utiles</h4>
+                        <a href="/share" class="footer-link">
+                            <i class="fas fa-share-alt"></i> Partager l'App
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Notifications -->
+    <div id="notification" class="notification"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

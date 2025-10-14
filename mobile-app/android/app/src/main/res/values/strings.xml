@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Dénonciation RDC</string>
+    <string name="title_activity_main">Dénonciation RDC</string>
+    <string name="package_name">com.guelord.denonciationrdc</string>
+    <string name="custom_url_scheme">com.guelord.denonciationrdc</string>
+</resources>
