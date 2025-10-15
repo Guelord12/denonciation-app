@@ -201,15 +201,17 @@ class DenonciationApp {
         }
     }
 
-    // ✅ NOUVELLE FONCTION POUR AFFICHER LE CODE AVEC BOUTON RETOUR
+    // ✅ FONCTION CORRIGÉE POUR AFFICHER LE CODE AVEC BOUTON RETOUR FONCTIONNEL
     showCodeModal(code, username, phoneNumber, type = 'register') {
         const title = type === 'register' ? 'Inscription Réussie' : 'Nouveau Code de Reconnexion';
         const message = type === 'register' 
             ? 'Utilisez ce code pour vous connecter' 
             : 'Utilisez ce nouveau code pour vous reconnecter';
         
+        // Créer le modal
         const modal = document.createElement('div');
         modal.className = 'modal active';
+        modal.id = 'code-modal';
         modal.innerHTML = `
             <div class="modal-content auth-modal" style="max-width: 500px;">
                 <div class="auth-header">
@@ -227,7 +229,7 @@ class DenonciationApp {
                     
                     <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; border: 2px dashed #3498db; margin: 1rem 0;">
                         <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">Votre code de vérification:</div>
-                        <div style="font-size: 2.5rem; font-weight: bold; color: #e74c3c; letter-spacing: 5px; margin: 1rem 0;">
+                        <div style="font-size: 2.5rem; font-weight: bold; color: #e74c3c; letter-spacing: 5px; margin: 1rem 0; font-family: 'Courier New', monospace;">
                             ${code}
                         </div>
                         <div style="font-size: 0.8rem; color: #e67e22;">
@@ -236,11 +238,11 @@ class DenonciationApp {
                     </div>
                     
                     <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin: 1rem 0;">
-                        <button onclick="app.copyCode('${code}')" class="btn btn-primary">
+                        <button class="btn btn-primary" id="copy-code-btn">
                             <i class="fas fa-copy"></i> Copier le Code
                         </button>
                         
-                        <button onclick="app.returnToLogin('${code}', '${phoneNumber}')" class="btn btn-secondary">
+                        <button class="btn btn-secondary" id="return-login-btn">
                             <i class="fas fa-arrow-left"></i> Retour à la connexion
                         </button>
                     </div>
@@ -261,6 +263,15 @@ class DenonciationApp {
         
         document.body.appendChild(modal);
         
+        // ✅ CORRECTION : Ajouter les event listeners après création du modal
+        document.getElementById('copy-code-btn').addEventListener('click', () => {
+            this.copyCode(code);
+        });
+        
+        document.getElementById('return-login-btn').addEventListener('click', () => {
+            this.returnToLogin(code, phoneNumber);
+        });
+        
         // Copier automatiquement le code pour la reconnexion
         if (type === 'reconnect') {
             this.copyCode(code);
@@ -276,9 +287,13 @@ class DenonciationApp {
         });
     }
 
-    // ✅ NOUVELLE FONCTION POUR RETOURNER À LA CONNEXION
+    // ✅ FONCTION CORRIGÉE POUR RETOURNER À LA CONNEXION
     returnToLogin(code, phoneNumber) {
-        this.closeCodeModal();
+        // ✅ CORRECTION : Fermer correctement le modal
+        const modal = document.getElementById('code-modal');
+        if (modal) {
+            modal.remove();
+        }
         
         // Rediriger vers le modal de connexion
         this.showAuthModal('login');
@@ -288,14 +303,6 @@ class DenonciationApp {
         document.getElementById('login-code').value = code;
         
         this.showNotification('✅ Code collé automatiquement! Vous pouvez maintenant vous connecter.', 'success');
-    }
-
-    // ✅ FONCTION POUR FERMER LE MODAL
-    closeCodeModal() {
-        const modal = document.querySelector('.modal.active');
-        if (modal) {
-            modal.remove();
-        }
     }
 
     showMainApp() {
