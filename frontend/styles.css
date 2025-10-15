@@ -233,14 +233,26 @@ body.auth-page {
     box-shadow: 0 6px 12px rgba(231, 76, 60, 0.3);
 }
 
+/* ✅ BOUTON SECONDARY AJOUTÉ */
 .btn-secondary {
     background: var(--accent-color);
     color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+    font-weight: 500;
 }
 
 .btn-secondary:hover {
     background: #2980b9;
     transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
 }
 
 .btn-outline {
@@ -257,6 +269,101 @@ body.auth-page {
 .btn-large {
     padding: 1rem 2rem;
     font-size: 1.1rem;
+}
+
+/* ✅ STYLE POUR L'AFFICHAGE DU CODE */
+.code-display {
+    font-family: 'Courier New', monospace;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #e74c3c;
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 2px dashed #3498db;
+    text-align: center;
+    letter-spacing: 5px;
+    margin: 1rem 0;
+}
+
+.copy-btn {
+    background: #27ae60;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 1rem;
+    margin: 0.5rem;
+    transition: var(--transition);
+}
+
+.copy-btn:hover {
+    background: #219653;
+    transform: translateY(-2px);
+}
+
+/* ✅ STYLE POUR LE MODAL DE CODE */
+.code-modal {
+    max-width: 500px !important;
+}
+
+.code-header {
+    background: linear-gradient(135deg, #27ae60, #219653);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 15px 15px 0 0;
+    text-align: center;
+}
+
+.code-content {
+    padding: 2rem;
+    text-align: center;
+}
+
+.user-info {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.code-container {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    border: 2px dashed #3498db;
+    margin: 1rem 0;
+}
+
+.code-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #e74c3c;
+    letter-spacing: 5px;
+    margin: 1rem 0;
+    font-family: 'Courier New', monospace;
+}
+
+.code-expiry {
+    font-size: 0.8rem;
+    color: #e67e22;
+}
+
+.code-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+}
+
+.code-instructions {
+    background: #e8f4fd;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #3498db;
 }
 
 /* Pages */
@@ -380,6 +487,88 @@ body.auth-page {
     padding: 0.25rem 0.5rem;
     border-radius: 20px;
     font-size: 0.8rem;
+}
+
+/* ✅ STYLES POUR LES COMMENTAIRES */
+.comments-section {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.comment {
+    background: white;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.comment-user {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.comment-date {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.comment-content {
+    margin-bottom: 0.5rem;
+}
+
+.comment-evidence {
+    max-width: 200px;
+    margin: 0.5rem 0;
+    border-radius: 4px;
+}
+
+.comment-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.reply-btn {
+    background: none;
+    border: none;
+    color: #3498db;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.reply-form {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #f1f1f1;
+    border-radius: 8px;
+}
+
+.replies-section {
+    margin-left: 2rem;
+    margin-top: 1rem;
+    border-left: 2px solid #3498db;
+    padding-left: 1rem;
+}
+
+.comment-form {
+    margin-top: 1rem;
+}
+
+.comment-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    resize: vertical;
+    min-height: 80px;
 }
 
 /* Formulaires */
@@ -518,6 +707,20 @@ body.auth-page {
     outline: none;
 }
 
+/* ✅ SECTION RECONNEXION */
+.reconnect-section {
+    text-align: center;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.reconnect-section p {
+    margin-bottom: 0.5rem;
+    color: #666;
+}
+
 /* Footer */
 .footer {
     background: var(--secondary-color);
@@ -580,7 +783,7 @@ body.auth-page {
     background: var(--accent-color);
 }
 
-/* Responsive */
+/* ✅ STYLES RESPONSIVE AMÉLIORÉS */
 @media (max-width: 768px) {
     .nav {
         display: none;
@@ -607,6 +810,21 @@ body.auth-page {
         flex-direction: column;
         gap: 0.5rem;
     }
+
+    .code-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .code-value {
+        font-size: 2rem;
+        letter-spacing: 3px;
+    }
+
+    .auth-modal {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -615,11 +833,137 @@ body.auth-page {
     }
 
     .auth-modal {
-        margin: 1rem;
-        padding: 1.5rem;
+        margin: 0.5rem;
+        padding: 1rem;
     }
 
     .stats-grid {
         grid-template-columns: 1fr;
     }
+
+    .posts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .code-value {
+        font-size: 1.8rem;
+        letter-spacing: 2px;
+    }
+
+    .btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+
+    .comment-form {
+        padding: 0.5rem;
+    }
+
+    .replies-section {
+        margin-left: 1rem;
+    }
+}
+
+/* ✅ ANIMATIONS SUPPLEMENTAIRES */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal.active .modal-content {
+    animation: fadeIn 0.3s ease;
+}
+
+.post-card {
+    animation: fadeIn 0.5s ease;
+}
+
+/* ✅ STYLES POUR LES BOUTONS D'ACTION */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+}
+
+.action-buttons .btn {
+    min-width: 140px;
+    justify-content: center;
+}
+
+/* ✅ STYLES POUR LES MESSAGES D'INFORMATION */
+.info-message {
+    background: #e8f4fd;
+    border: 1px solid #3498db;
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin: 1rem 0;
+    color: #2c3e50;
+}
+
+.info-message i {
+    color: #3498db;
+    margin-right: 0.5rem;
+}
+
+/* ✅ STYLES POUR LES CHAMPS DE FORMULAIRE AMÉLIORÉS */
+.form-group input:valid {
+    border-color: #27ae60;
+}
+
+.form-group input:invalid:not(:focus):not(:placeholder-shown) {
+    border-color: #e74c3c;
+}
+
+/* ✅ LOADING SPINNER */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ✅ STYLES POUR LES BADGES */
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.badge-success {
+    background: #27ae60;
+    color: white;
+}
+
+.badge-warning {
+    background: #f39c12;
+    color: white;
+}
+
+.badge-danger {
+    background: #e74c3c;
+    color: white;
+}
+
+.badge-info {
+    background: #3498db;
+    color: white;
 }

@@ -201,7 +201,7 @@ class DenonciationApp {
         }
     }
 
-    // ✅ NOUVELLE FONCTION POUR AFFICHER LE CODE
+    // ✅ NOUVELLE FONCTION POUR AFFICHER LE CODE AVEC BOUTON RETOUR
     showCodeModal(code, username, phoneNumber, type = 'register') {
         const title = type === 'register' ? 'Inscription Réussie' : 'Nouveau Code de Reconnexion';
         const message = type === 'register' 
@@ -220,7 +220,7 @@ class DenonciationApp {
                     <p>${message}</p>
                 </div>
                 
-                <div style="text-align: center; padding: 2rem;">
+                <div style="text-align: center; padding: 1rem;">
                     <div style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">
                         Pour: <strong>${username}</strong> (${phoneNumber})
                     </div>
@@ -235,36 +235,59 @@ class DenonciationApp {
                         </div>
                     </div>
                     
-                    <button onclick="app.copyCode('${code}')" class="btn btn-primary" style="margin: 0.5rem;">
-                        <i class="fas fa-copy"></i> Copier le Code
-                    </button>
-                    
-                    <button onclick="app.closeCodeModal()" class="btn btn-outline" style="margin: 0.5rem;">
-                        <i class="fas fa-times"></i> Fermer
-                    </button>
+                    <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin: 1rem 0;">
+                        <button onclick="app.copyCode('${code}')" class="btn btn-primary">
+                            <i class="fas fa-copy"></i> Copier le Code
+                        </button>
+                        
+                        <button onclick="app.returnToLogin('${code}', '${phoneNumber}')" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Retour à la connexion
+                        </button>
+                    </div>
                 </div>
                 
                 <div style="background: #e8f4fd; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
                     <div style="font-size: 0.9rem; color: #3498db;">
                         <i class="fas fa-info-circle"></i> 
-                        <strong>Instructions:</strong> Copiez ce code et utilisez-le dans l'écran de connexion
+                        <strong>Instructions:</strong> 
+                        ${type === 'register' 
+                            ? 'Copiez ce code et collez-le dans l\'écran de connexion' 
+                            : 'Votre code a été copié automatiquement. Retournez à la connexion pour le coller'
+                        }
                     </div>
                 </div>
             </div>
         `;
         
         document.body.appendChild(modal);
+        
+        // Copier automatiquement le code pour la reconnexion
+        if (type === 'reconnect') {
+            this.copyCode(code);
+        }
     }
 
     // ✅ FONCTION POUR COPIER LE CODE
     copyCode(code) {
         navigator.clipboard.writeText(code).then(() => {
             this.showNotification('✅ Code copié dans le presse-papier!', 'success');
-            // Remplir automatiquement le champ code dans le modal de connexion
-            document.getElementById('login-code').value = code;
         }).catch(() => {
             this.showNotification('❌ Impossible de copier le code', 'error');
         });
+    }
+
+    // ✅ NOUVELLE FONCTION POUR RETOURNER À LA CONNEXION
+    returnToLogin(code, phoneNumber) {
+        this.closeCodeModal();
+        
+        // Rediriger vers le modal de connexion
+        this.showAuthModal('login');
+        
+        // Pré-remplir automatiquement
+        document.getElementById('login-phone').value = phoneNumber;
+        document.getElementById('login-code').value = code;
+        
+        this.showNotification('✅ Code collé automatiquement! Vous pouvez maintenant vous connecter.', 'success');
     }
 
     // ✅ FONCTION POUR FERMER LE MODAL
@@ -272,13 +295,6 @@ class DenonciationApp {
         const modal = document.querySelector('.modal.active');
         if (modal) {
             modal.remove();
-        }
-        // Rediriger vers le modal de connexion
-        this.showAuthModal('login');
-        // Pré-remplir le numéro de téléphone
-        const phoneFromRegister = document.getElementById('reg-phone').value;
-        if (phoneFromRegister) {
-            document.getElementById('login-phone').value = phoneFromRegister;
         }
     }
 
