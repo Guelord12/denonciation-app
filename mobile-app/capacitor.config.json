@@ -3,14 +3,20 @@
   "appName": "Dénonciation RDC", 
   "webDir": "dist",
   "server": {
-    "url": "http://192.168.160.90:3000",
-    "cleartext": true
+    "url": "https://denonciation-app.onrender.com",
+    "cleartext": false
   },
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 3000,
       "launchAutoHide": true,
       "backgroundColor": "#e74c3c"
+    },
+    "Camera": {
+      "enableUpload": true
+    },
+    "Geolocation": {
+      "enableHighAccuracy": true
     }
   }
 }

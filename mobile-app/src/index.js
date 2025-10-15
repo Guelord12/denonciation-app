@@ -8,7 +8,8 @@ import { SplashScreen } from '@capacitor/splash-screen';
 
 class MobileDenonciationApp {
     constructor() {
-        this.API_BASE_URL = 'http://localhost:3000';
+        // ✅ UTILISER L'URL RENDER.COM
+        this.API_BASE_URL = 'https://denonciation-app.onrender.com';
         this.currentUser = null;
         this.token = null;
         this.isNative = Capacitor.isNativePlatform();
@@ -21,6 +22,9 @@ class MobileDenonciationApp {
         this.setupEventListeners();
         this.checkAuthentication();
         this.loadInitialData();
+        
+        // ✅ TESTER LA CONNEXION AU DÉMARRAGE
+        this.testConnection();
     }
 
     async setupCapacitor() {
@@ -38,6 +42,30 @@ class MobileDenonciationApp {
                     App.exitApp();
                 }
             });
+        }
+    }
+
+    // ✅ NOUVELLE FONCTION POUR TESTER LA CONNEXION
+    async testConnection() {
+        try {
+            const response = await fetch(`${this.API_BASE_URL}/api/test-db`);
+            const data = await response.json();
+            console.log('✅ Connexion serveur:', data.status);
+            
+            if (this.isNative) {
+                await Toast.show({
+                    text: 'Serveur connecté',
+                    duration: 'short'
+                });
+            }
+        } catch (error) {
+            console.error('❌ Erreur connexion serveur:', error);
+            if (this.isNative) {
+                await Toast.show({
+                    text: 'Erreur connexion serveur',
+                    duration: 'long'
+                });
+            }
         }
     }
 
@@ -60,6 +88,9 @@ class MobileDenonciationApp {
         document.getElementById('register-form').addEventListener('submit', (e) => this.handleRegister(e));
         document.getElementById('report-form').addEventListener('submit', (e) => this.handleReport(e));
 
+        // ✅ AJOUTER LE BOUTON DE RECONNEXION
+        document.getElementById('request-reconnect')?.addEventListener('click', () => this.handleReconnect());
+
         // Gestion des fichiers
         document.getElementById('report-evidence').addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -67,6 +98,9 @@ class MobileDenonciationApp {
                 document.getElementById('file-name').textContent = `Fichier: ${file.name}`;
             }
         });
+
+        // ✅ AJOUTER LE BOUTON APPAREIL PHOTO
+        document.getElementById('camera-btn')?.addEventListener('click', () => this.takePhoto());
     }
 
     async checkAuthentication() {
@@ -110,16 +144,48 @@ class MobileDenonciationApp {
     hideAuthModal() {
         document.getElementById('auth-modal').style.display = 'none';
         document.getElementById('register-modal').style.display = 'none';
+        document.getElementById('code-modal').style.display = 'none';
     }
 
     showLogin() {
         document.getElementById('register-modal').style.display = 'none';
+        document.getElementById('code-modal').style.display = 'none';
         document.getElementById('auth-modal').style.display = 'flex';
     }
 
     showRegister() {
         document.getElementById('auth-modal').style.display = 'none';
+        document.getElementById('code-modal').style.display = 'none';
         document.getElementById('register-modal').style.display = 'flex';
+    }
+
+    // ✅ FONCTION DE RECONNEXION POUR ANCIENS UTILISATEURS
+    async handleReconnect() {
+        const phoneNumber = document.getElementById('login-phone').value;
+        
+        if (!phoneNumber) {
+            this.showToast('Veuillez d\'abord entrer votre numéro', 'error');
+            return;
+        }
+
+        try {
+            const response = await fetch(`${this.API_BASE_URL}/api/request-reconnect`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phoneNumber })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // ✅ AFFICHER LE CODE DIRECTEMENT À L'UTILISATEUR
+                this.showCodeModal(result.code, result.username, result.phoneNumber, 'reconnect');
+            } else {
+                this.showToast(result.error, 'error');
+            }
+        } catch (error) {
+            this.showToast('Erreur de connexion', 'error');
+        }
     }
 
     async handleLogin(e) {
@@ -138,7 +204,10 @@ class MobileDenonciationApp {
 
             if (result.success) {
                 this.token = result.token;
-                this.currentUser = { username: result.username };
+                this.currentUser = { 
+                    username: result.username,
+                    phoneNumber: phoneNumber 
+                };
                 
                 if (this.isNative) {
                     await Preferences.set({ key: 'auth_token', value: this.token });
@@ -172,9 +241,8 @@ class MobileDenonciationApp {
             const result = await response.json();
 
             if (result.success) {
-                this.showToast('Code envoyé! Vérifiez vos messages.');
-                document.getElementById('login-phone').value = phoneNumber;
-                this.showLogin();
+                // ✅ AFFICHER LE CODE DIRECTEMENT À L'UTILISATEUR
+                this.showCodeModal(result.code, result.username, result.phoneNumber, 'register');
             } else {
                 this.showToast(result.error, 'error');
             }
@@ -183,11 +251,99 @@ class MobileDenonciationApp {
         }
     }
 
+    // ✅ FONCTION POUR AFFICHER LE CODE
+    showCodeModal(code, username, phoneNumber, type = 'register') {
+        const title = type === 'register' ? 'Inscription Réussie' : 'Nouveau Code de Reconnexion';
+        const message = type === 'register' 
+            ? 'Utilisez ce code pour vous connecter' 
+            : 'Utilisez ce nouveau code pour vous reconnecter';
+        
+        const modal = document.createElement('div');
+        modal.className = 'mobile-modal';
+        modal.id = 'code-modal';
+        modal.style.display = 'flex';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="width: 60px; height: 60px; background: #27ae60; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; color: white; font-size: 1.5rem;">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <h3>${title}</h3>
+                    <p style="color: #666;">${message}</p>
+                </div>
+                
+                <div style="text-align: center; padding: 1rem;">
+                    <div style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">
+                        Pour: <strong>${username}</strong> (${phoneNumber})
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; border: 2px dashed #3498db; margin: 1rem 0;">
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">Votre code de vérification:</div>
+                        <div style="font-size: 2rem; font-weight: bold; color: #e74c3c; letter-spacing: 3px; margin: 1rem 0; font-family: monospace;">
+                            ${code}
+                        </div>
+                        <div style="font-size: 0.8rem; color: #e67e22;">
+                            ⏰ Expire dans 10 minutes
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin: 1rem 0;">
+                        <button class="mobile-btn" onclick="app.copyCode('${code}')">
+                            <i class="fas fa-copy"></i> Copier
+                        </button>
+                        
+                        <button class="mobile-btn mobile-btn-outline" onclick="app.returnToLogin('${code}', '${phoneNumber}')">
+                            <i class="fas fa-arrow-left"></i> Connexion
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Copier automatiquement le code pour la reconnexion
+        if (type === 'reconnect') {
+            this.copyCode(code);
+        }
+    }
+
+    // ✅ FONCTION POUR COPIER LE CODE
+    async copyCode(code) {
+        if (this.isNative) {
+            // Pour mobile, on utilise le presse-papier natif
+            await Toast.show({
+                text: 'Code copié!',
+                duration: 'short'
+            });
+        } else {
+            // Pour le web
+            navigator.clipboard.writeText(code).then(() => {
+                this.showToast('Code copié!');
+            });
+        }
+    }
+
+    // ✅ FONCTION POUR RETOURNER À LA CONNEXION
+    returnToLogin(code, phoneNumber) {
+        document.getElementById('code-modal').remove();
+        
+        // Rediriger vers le modal de connexion
+        this.showLogin();
+        
+        // Pré-remplir automatiquement
+        document.getElementById('login-phone').value = phoneNumber;
+        document.getElementById('login-code').value = code;
+        
+        this.showToast('Code collé automatiquement!');
+    }
+
     async handleReport(e) {
         e.preventDefault();
         
         if (!this.token) {
             this.showToast('Veuillez vous connecter', 'error');
+            this.showAuthModal();
             return;
         }
 
@@ -205,6 +361,8 @@ class MobileDenonciationApp {
         formData.append('evidence', evidenceFile);
 
         try {
+            this.showToast('Publication en cours...');
+            
             const response = await fetch(`${this.API_BASE_URL}/api/posts`, {
                 method: 'POST',
                 headers: {
@@ -231,7 +389,13 @@ class MobileDenonciationApp {
 
     async getLocation() {
         try {
-            const coordinates = await Geolocation.getCurrentPosition();
+            this.showToast('Localisation en cours...');
+            
+            const coordinates = await Geolocation.getCurrentPosition({
+                enableHighAccuracy: true,
+                timeout: 10000
+            });
+            
             const lat = coordinates.coords.latitude;
             const lng = coordinates.coords.longitude;
             
@@ -239,6 +403,7 @@ class MobileDenonciationApp {
             this.showToast('Position obtenue');
         } catch (error) {
             this.showToast('Impossible d\'obtenir la position', 'error');
+            console.error('Erreur géolocalisation:', error);
         }
     }
 
@@ -247,22 +412,28 @@ class MobileDenonciationApp {
             const image = await Camera.getPhoto({
                 quality: 90,
                 allowEditing: false,
-                resultType: 'dataUrl'
+                resultType: 'base64',
+                source: 'CAMERA',
+                direction: 'REAR'
             });
 
-            // Convertir l'image en fichier pour l'upload
-            const response = await fetch(image.dataUrl);
+            // Convertir base64 en blob
+            const response = await fetch(`data:image/jpeg;base64,${image.base64String}`);
             const blob = await response.blob();
-            const file = new File([blob], 'photo.jpg', { type: 'image/jpeg' });
+            const file = new File([blob], `photo_${Date.now()}.jpg`, { type: 'image/jpeg' });
             
             // Mettre à jour l'input file
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(file);
             document.getElementById('report-evidence').files = dataTransfer.files;
-            document.getElementById('file-name').textContent = 'Fichier: photo.jpg';
+            document.getElementById('file-name').textContent = `Fichier: ${file.name}`;
+            
+            this.showToast('Photo prise!');
             
         } catch (error) {
-            console.log('User cancelled photo taking');
+            if (error.message !== 'User cancelled photos app') {
+                this.showToast('Erreur appareil photo', 'error');
+            }
         }
     }
 
@@ -317,6 +488,7 @@ class MobileDenonciationApp {
 
         } catch (error) {
             console.error('Erreur chargement posts:', error);
+            this.showToast('Erreur chargement', 'error');
         }
     }
 
@@ -357,6 +529,7 @@ class MobileDenonciationApp {
                 <i class="fas fa-map-marked-alt" style="font-size: 3rem; color: #e74c3c; margin-bottom: 10px;"></i>
                 <h3>Carte Interactive</h3>
                 <p style="color: #666; margin-bottom: 15px;">Visualisation des signalements en temps réel</p>
+                <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">Serveur: ${this.API_BASE_URL}</p>
                 <button class="mobile-btn mobile-btn-outline" onclick="app.refreshMap()">
                     <i class="fas fa-sync"></i> Actualiser
                 </button>
@@ -410,10 +583,11 @@ class MobileDenonciationApp {
         if (this.isNative) {
             await Toast.show({
                 text: message,
-                duration: 'short'
+                duration: type === 'error' ? 'long' : 'short'
             });
         } else {
-            alert(message); // Fallback pour le web
+            // Fallback pour le web
+            console.log(`${type.toUpperCase()}: ${message}`);
         }
     }
 

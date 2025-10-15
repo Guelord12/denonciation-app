@@ -28,8 +28,16 @@ module.exports = {
     }),
     new CopyWebpackPlugin({
       patterns: [
-        { from: 'src/assets', to: 'assets' },
-        { from: 'src/manifest.json', to: 'manifest.json' }
+        { 
+          from: 'src/assets', 
+          to: 'assets',
+          noErrorOnMissing: true // ✅ EMPÊCHE L'ERREUR SI LE DOSSIER N'EXISTE PAS
+        },
+        { 
+          from: 'src/manifest.json', 
+          to: 'manifest.json',
+          noErrorOnMissing: true // ✅ EMPÊCHE L'ERREUR SI LE FICHIER N'EXISTE PAS
+        }
       ],
     }),
   ],

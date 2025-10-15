@@ -265,6 +265,25 @@
             100% { transform: rotate(360deg); }
         }
         
+        /* Styles pour le code de vérification */
+        .code-display {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 2px dashed #3498db;
+            margin: 1rem 0;
+            text-align: center;
+        }
+        
+        .code-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #e74c3c;
+            letter-spacing: 3px;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
             .mobile-header {
@@ -305,6 +324,11 @@
             
             .nav-item.active {
                 color: #e74c3c;
+            }
+            
+            .code-display {
+                background: #2d2d2d;
+                border-color: #3498db;
             }
         }
     </style>
@@ -395,10 +419,13 @@
 
                 <div style="margin-bottom: 15px;">
                     <input type="file" id="report-evidence" accept="image/*,video/*" style="display: none;">
-                    <button type="button" class="mobile-btn mobile-btn-outline" onclick="document.getElementById('report-evidence').click()">
-                        <i class="fas fa-camera"></i> Ajouter une preuve
+                    <button type="button" class="mobile-btn mobile-btn-outline" onclick="document.getElementById('report-evidence').click()" style="margin-bottom: 5px;">
+                        <i class="fas fa-folder-open"></i> Choisir un fichier
                     </button>
-                    <div id="file-name" style="font-size: 0.9rem; color: #666; margin-top: 5px;"></div>
+                    <button type="button" class="mobile-btn mobile-btn-outline" id="camera-btn" style="margin-bottom: 10px;">
+                        <i class="fas fa-camera"></i> Prendre une photo
+                    </button>
+                    <div id="file-name" style="font-size: 0.9rem; color: #666; margin-top: 5px; text-align: center;"></div>
                 </div>
 
                 <button type="submit" class="mobile-btn">
@@ -421,7 +448,7 @@
                 <div style="text-align: center;">
                     <i class="fas fa-map-marked-alt" style="font-size: 3rem; margin-bottom: 10px;"></i>
                     <p>Carte interactive</p>
-                    <p style="font-size: 0.9rem;">Chargement...</p>
+                    <p style="font-size: 0.9rem;">Serveur: denonciation-app.onrender.com</p>
                 </div>
             </div>
         </div>
@@ -455,6 +482,12 @@
                 <button class="mobile-btn mobile-btn-outline" onclick="app.logout()" style="margin-bottom: 10px;">
                     <i class="fas fa-sign-out-alt"></i> Déconnexion
                 </button>
+                
+                <div style="background: #f8f9fa; padding: 10px; border-radius: 8px; margin-top: 15px;">
+                    <p style="font-size: 0.8rem; color: #666; margin: 0;">
+                        <strong>Serveur:</strong> denonciation-app.onrender.com
+                    </p>
+                </div>
             </div>
         </div>
     </main>
@@ -479,7 +512,7 @@
         </a>
     </nav>
 
-    <!-- Modals -->
+    <!-- Modal de Connexion -->
     <div id="auth-modal" class="mobile-modal" style="display: none;">
         <div class="modal-content">
             <div style="text-align: center; margin-bottom: 20px;">
@@ -487,6 +520,7 @@
                     <i class="fas fa-shield-alt"></i>
                 </div>
                 <h3>Connexion</h3>
+                <p style="color: #666; font-size: 0.9rem;">Serveur: denonciation-app.onrender.com</p>
             </div>
 
             <form id="login-form">
@@ -498,6 +532,16 @@
                 </button>
             </form>
 
+            <!-- Section Reconnexion -->
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                <p style="margin-bottom: 10px; color: #666; text-align: center; font-size: 0.9rem;">
+                    Ancien utilisateur sans code?
+                </p>
+                <button type="button" class="mobile-btn mobile-btn-outline" id="request-reconnect" style="width: 100%;">
+                    <i class="fas fa-sync-alt"></i> Demander un nouveau code
+                </button>
+            </div>
+
             <div style="text-align: center;">
                 <p style="margin-bottom: 10px; color: #666;">Nouveau utilisateur?</p>
                 <button class="mobile-btn mobile-btn-outline" onclick="app.showRegister()">
@@ -507,6 +551,7 @@
         </div>
     </div>
 
+    <!-- Modal d'Inscription -->
     <div id="register-modal" class="mobile-modal" style="display: none;">
         <div class="modal-content">
             <div style="text-align: center; margin-bottom: 20px;">
@@ -514,6 +559,7 @@
                     <i class="fas fa-user-plus"></i>
                 </div>
                 <h3>Inscription</h3>
+                <p style="color: #666; font-size: 0.9rem;">Serveur: denonciation-app.onrender.com</p>
             </div>
 
             <form id="register-form">

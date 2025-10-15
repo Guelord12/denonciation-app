@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkdenonciation_rdc_mobile=self.webpackChunkdenonciation_rdc_mobile||[]).push([[411],{411:(e,n,s)=>{s.d(n,{SplashScreenWeb:()=>a});var c=s(546);class a extends c.E_{async show(e){}async hide(e){}}}}]);
