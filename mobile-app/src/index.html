@@ -173,6 +173,18 @@
             color: #e74c3c;
         }
         
+        /* ✅ BOUTON DÉCONNEXION STYLE DANGER */
+        .mobile-btn-danger {
+            background: transparent;
+            border: 2px solid #e74c3c;
+            color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+        }
+        
+        .mobile-btn-danger:active {
+            background: rgba(231, 76, 60, 0.2);
+        }
+        
         /* Formulaires mobiles */
         .mobile-input {
             width: 100%;
@@ -503,7 +515,8 @@
                     </div>
                 </div>
 
-                <button class="mobile-btn mobile-btn-outline" onclick="app.logout()" style="margin-bottom: 10px;">
+                <!-- ✅ BOUTON DÉCONNEXION AJOUTÉ -->
+                <button class="mobile-btn mobile-btn-danger" onclick="app.logout()" style="margin-bottom: 10px;">
                     <i class="fas fa-sign-out-alt"></i> Déconnexion
                 </button>
                 
