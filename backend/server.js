@@ -22,12 +22,12 @@ const io = new Server(server, {
 const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'denonciation_rdc_secret_2025';
 
-// Base de données
-const { Pool } = require('pg');
-
+// ✅ CONFIGURATION RENDER.COM POSTGRESQL
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  connectionString: "postgresql://denonciation_app_user:PHyAYKulWlMEHsS8Kly0Fcx5nhfxfcQV@dpg-d3n7bmeuk2gs73b6pubg-a.oregon-postgres.render.com/denonciation_app",
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 // Middleware
@@ -196,7 +196,27 @@ function getNetworkIPs() {
   return ips;
 }
 
-// ✅ ROUTE POUR LA PAGE DE PARTAGE (AJOUTÉE)
+// ✅ ROUTE POUR TESTER LA CONNEXION RENDER
+app.get('/api/test-render-db', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT NOW() as time, current_database() as db, current_user as user');
+    res.json({ 
+      status: '✅ CONNECTÉ À RENDER POSTGRESQL',
+      database: result.rows[0].db,
+      user: result.rows[0].user,
+      time: result.rows[0].time,
+      connection: 'Active et fonctionnelle'
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      status: '❌ ERREUR CONNEXION RENDER',
+      error: error.message,
+      details: 'Vérifiez les paramètres de connexion'
+    });
+  }
+});
+
+// ✅ ROUTE POUR LA PAGE DE PARTAGE
 app.get('/api/share-info', (req, res) => {
   const networkIPs = getNetworkIPs();
   
@@ -432,7 +452,7 @@ app.post('/api/comments', authenticateToken, upload.single('evidence'), async (r
   }
 });
 
-// ROUTES EXISTANTES (inchangées)
+// ROUTES EXISTANTES
 app.get('/api/network-info', (req, res) => {
   const networkIPs = getNetworkIPs();
   
@@ -495,7 +515,7 @@ app.get('/api/test-db', async (req, res) => {
   }
 });
 
-// INSCRIPTION (inchangée)
+// INSCRIPTION
 app.post('/api/register', async (req, res) => {
   console.log('📝 INSCRIPTION:', req.body);
   
@@ -563,7 +583,7 @@ app.get('/api/posts', async (req, res) => {
   }
 });
 
-// Créer une publication (inchangée)
+// Créer une publication
 app.post('/api/posts', authenticateToken, upload.single('evidence'), async (req, res) => {
   console.log('📮 NOUVEAU SIGNALEMENT REÇU');
   
@@ -619,7 +639,7 @@ app.post('/api/posts', authenticateToken, upload.single('evidence'), async (req,
   }
 });
 
-// ✅ NOUVELLE ROUTE POUR LES STATISTIQUES (si elle n'existe pas)
+// ✅ ROUTE POUR LES STATISTIQUES
 app.get('/api/statistics', async (req, res) => {
   try {
     const result = await pool.query(`
@@ -637,7 +657,7 @@ app.get('/api/statistics', async (req, res) => {
   }
 });
 
-// ✅ ROUTE POUR LES CONTACTS (si elle n'existe pas)
+// ✅ ROUTE POUR LES CONTACTS
 app.post('/api/contact', async (req, res) => {
   console.log('📧 NOUVEAU MESSAGE DE CONTACT:', req.body);
   
@@ -693,10 +713,12 @@ server.listen(PORT, '0.0.0.0', () => {
   const networkIPs = getNetworkIPs();
   
   console.log('='.repeat(70));
-  console.log('🚀 DÉNONCIATION RDC - SERVEUR AMÉLIORÉ DÉMARRÉ');
+  console.log('🚀 DÉNONCIATION RDC - SERVEUR RENDER.COM DÉMARRÉ');
   console.log('='.repeat(70));
   console.log(`📍 Port: ${PORT}`);
   console.log(`🏠 Local: http://localhost:${PORT}`);
+  console.log(`🗄️  Base de données: Render PostgreSQL`);
+  console.log(`🔗 URL DB: denonciation_app sur Render`);
   
   if (networkIPs.length > 0) {
     networkIPs.forEach(ip => {
@@ -705,12 +727,12 @@ server.listen(PORT, '0.0.0.0', () => {
   }
   
   console.log('='.repeat(70));
-  console.log('🆕 NOUVELLES FONCTIONNALITÉS:');
+  console.log('🆕 FONCTIONNALITÉS DISPONIBLES:');
   console.log('   🔐 Reconnexion pour anciens utilisateurs');
   console.log('   💬 Système de commentaires complet');
   console.log('   📎 Médias dans les commentaires');
   console.log('   🔄 Réponses aux commentaires');
-  console.log('   🌐 Route /api/share-info pour le partage');
+  console.log('   🌐 Base de données Render PostgreSQL');
   console.log('='.repeat(70));
   console.log('✅ PRÊT POUR LES CONNEXIONS!');
   console.log('='.repeat(70));
