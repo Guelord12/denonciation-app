@@ -86,7 +86,7 @@ class DenonciationApp {
         });
     }
 
-    // ✅ FONCTION DE RECONNEXION POUR ANCIENS UTILISATEURS
+    // ✅ FONCTION DE RECONNEXION POUR ANCIENS UTILISATEURS (AFFICHAGE DU CODE)
     async handleReconnect() {
         const phoneNumber = document.getElementById('login-phone').value;
         
@@ -105,8 +105,8 @@ class DenonciationApp {
             const result = await response.json();
 
             if (result.success) {
-                this.showNotification('Nouveau code envoyé! Vérifiez vos codes de vérification.', 'success');
-                console.log(`📱 Code de reconnexion: ${result.code}`);
+                // ✅ AFFICHER LE CODE DIRECTEMENT À L'UTILISATEUR
+                this.showCodeModal(result.code, result.username, result.phoneNumber, 'reconnect');
             } else {
                 this.showNotification(result.error, 'error');
             }
@@ -147,6 +147,7 @@ class DenonciationApp {
         document.getElementById(`${modalType}-modal`).classList.add('active');
     }
 
+    // ✅ INSCRIPTION AMÉLIORÉE (AFFICHAGE DU CODE)
     async handleRegister(e) {
         e.preventDefault();
         const phoneNumber = document.getElementById('reg-phone').value;
@@ -162,9 +163,8 @@ class DenonciationApp {
             const result = await response.json();
 
             if (result.success) {
-                this.showNotification('Code de vérification envoyé!', 'success');
-                document.getElementById('login-phone').value = phoneNumber;
-                this.showAuthModal('login');
+                // ✅ AFFICHER LE CODE DIRECTEMENT À L'UTILISATEUR
+                this.showCodeModal(result.code, result.username, result.phoneNumber, 'register');
             } else {
                 this.showNotification(result.error, 'error');
             }
@@ -198,6 +198,87 @@ class DenonciationApp {
             }
         } catch (error) {
             this.showNotification('Erreur de connexion', 'error');
+        }
+    }
+
+    // ✅ NOUVELLE FONCTION POUR AFFICHER LE CODE
+    showCodeModal(code, username, phoneNumber, type = 'register') {
+        const title = type === 'register' ? 'Inscription Réussie' : 'Nouveau Code de Reconnexion';
+        const message = type === 'register' 
+            ? 'Utilisez ce code pour vous connecter' 
+            : 'Utilisez ce nouveau code pour vous reconnecter';
+        
+        const modal = document.createElement('div');
+        modal.className = 'modal active';
+        modal.innerHTML = `
+            <div class="modal-content auth-modal" style="max-width: 500px;">
+                <div class="auth-header">
+                    <div class="app-icon" style="background: #27ae60;">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <h2>${title}</h2>
+                    <p>${message}</p>
+                </div>
+                
+                <div style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">
+                        Pour: <strong>${username}</strong> (${phoneNumber})
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; border: 2px dashed #3498db; margin: 1rem 0;">
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">Votre code de vérification:</div>
+                        <div style="font-size: 2.5rem; font-weight: bold; color: #e74c3c; letter-spacing: 5px; margin: 1rem 0;">
+                            ${code}
+                        </div>
+                        <div style="font-size: 0.8rem; color: #e67e22;">
+                            ⏰ Expire dans 10 minutes
+                        </div>
+                    </div>
+                    
+                    <button onclick="app.copyCode('${code}')" class="btn btn-primary" style="margin: 0.5rem;">
+                        <i class="fas fa-copy"></i> Copier le Code
+                    </button>
+                    
+                    <button onclick="app.closeCodeModal()" class="btn btn-outline" style="margin: 0.5rem;">
+                        <i class="fas fa-times"></i> Fermer
+                    </button>
+                </div>
+                
+                <div style="background: #e8f4fd; padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+                    <div style="font-size: 0.9rem; color: #3498db;">
+                        <i class="fas fa-info-circle"></i> 
+                        <strong>Instructions:</strong> Copiez ce code et utilisez-le dans l'écran de connexion
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+    }
+
+    // ✅ FONCTION POUR COPIER LE CODE
+    copyCode(code) {
+        navigator.clipboard.writeText(code).then(() => {
+            this.showNotification('✅ Code copié dans le presse-papier!', 'success');
+            // Remplir automatiquement le champ code dans le modal de connexion
+            document.getElementById('login-code').value = code;
+        }).catch(() => {
+            this.showNotification('❌ Impossible de copier le code', 'error');
+        });
+    }
+
+    // ✅ FONCTION POUR FERMER LE MODAL
+    closeCodeModal() {
+        const modal = document.querySelector('.modal.active');
+        if (modal) {
+            modal.remove();
+        }
+        // Rediriger vers le modal de connexion
+        this.showAuthModal('login');
+        // Pré-remplir le numéro de téléphone
+        const phoneFromRegister = document.getElementById('reg-phone').value;
+        if (phoneFromRegister) {
+            document.getElementById('login-phone').value = phoneFromRegister;
         }
     }
 
@@ -274,7 +355,6 @@ class DenonciationApp {
         const div = document.createElement('div');
         div.className = 'post-card';
         
-        // ✅ AJOUT DE LA SECTION COMMENTAIRES
         div.innerHTML = `
             ${post.evidence_url ? `
                 <img src="${this.API_BASE_URL}${post.evidence_url}" alt="Preuve" class="post-image" 
@@ -527,7 +607,6 @@ class DenonciationApp {
         }
     }
 
-    // ... (le reste des fonctions existantes reste inchangé)
     async loadStatistics() {
         try {
             const response = await fetch(`${this.API_BASE_URL}/api/statistics`);
@@ -755,7 +834,6 @@ Vous pouvez aussi répondre aux commentaires existants!`,
 3. Utilisez le code affiché pour vous connecter<br>
 4. Vous retrouverez votre compte!`,
 
-            // ... (autres réponses existantes)
             'default': `Je comprends que vous avez une question sur Dénonciation RDC. 🤔<br><br>
 Je peux vous aider avec :<br>
 • L'utilisation de l'application<br>
