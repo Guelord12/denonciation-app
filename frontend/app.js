@@ -201,12 +201,15 @@ class DenonciationApp {
         }
     }
 
-    // ✅ FONCTION CORRIGÉE POUR AFFICHER LE CODE AVEC BOUTON RETOUR FONCTIONNEL
+    // ✅ FONCTION COMPLÈTEMENT CORRIGÉE POUR LE MODAL DE CODE
     showCodeModal(code, username, phoneNumber, type = 'register') {
         const title = type === 'register' ? 'Inscription Réussie' : 'Nouveau Code de Reconnexion';
         const message = type === 'register' 
             ? 'Utilisez ce code pour vous connecter' 
             : 'Utilisez ce nouveau code pour vous reconnecter';
+        
+        // Sauvegarder les données pour les utiliser dans les fonctions
+        const modalData = { code, username, phoneNumber, type };
         
         // Créer le modal
         const modal = document.createElement('div');
@@ -263,46 +266,47 @@ class DenonciationApp {
         
         document.body.appendChild(modal);
         
-        // ✅ CORRECTION : Ajouter les event listeners après création du modal
-        document.getElementById('copy-code-btn').addEventListener('click', () => {
-            this.copyCode(code);
-        });
+        // ✅ CORRECTION COMPLÈTE : Utiliser des fonctions locales avec bind
+        const copyCode = () => {
+            navigator.clipboard.writeText(code).then(() => {
+                this.showNotification('✅ Code copié dans le presse-papier!', 'success');
+            }).catch(() => {
+                this.showNotification('❌ Impossible de copier le code', 'error');
+            });
+        };
         
-        document.getElementById('return-login-btn').addEventListener('click', () => {
-            this.returnToLogin(code, phoneNumber);
-        });
+        const returnToLogin = () => {
+            // Fermer le modal
+            const modal = document.getElementById('code-modal');
+            if (modal) {
+                modal.remove();
+            }
+            
+            // Rediriger vers le modal de connexion
+            this.showAuthModal('login');
+            
+            // Pré-remplir automatiquement
+            document.getElementById('login-phone').value = phoneNumber;
+            document.getElementById('login-code').value = code;
+            
+            this.showNotification('✅ Code collé automatiquement! Vous pouvez maintenant vous connecter.', 'success');
+        };
+        
+        // Ajouter les event listeners
+        document.getElementById('copy-code-btn').addEventListener('click', copyCode);
+        document.getElementById('return-login-btn').addEventListener('click', returnToLogin);
         
         // Copier automatiquement le code pour la reconnexion
         if (type === 'reconnect') {
-            this.copyCode(code);
+            copyCode();
         }
-    }
-
-    // ✅ FONCTION POUR COPIER LE CODE
-    copyCode(code) {
-        navigator.clipboard.writeText(code).then(() => {
-            this.showNotification('✅ Code copié dans le presse-papier!', 'success');
-        }).catch(() => {
-            this.showNotification('❌ Impossible de copier le code', 'error');
+        
+        // ✅ CORRECTION : Gérer la fermeture du modal en cliquant à l'extérieur
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.remove();
+            }
         });
-    }
-
-    // ✅ FONCTION CORRIGÉE POUR RETOURNER À LA CONNEXION
-    returnToLogin(code, phoneNumber) {
-        // ✅ CORRECTION : Fermer correctement le modal
-        const modal = document.getElementById('code-modal');
-        if (modal) {
-            modal.remove();
-        }
-        
-        // Rediriger vers le modal de connexion
-        this.showAuthModal('login');
-        
-        // Pré-remplir automatiquement
-        document.getElementById('login-phone').value = phoneNumber;
-        document.getElementById('login-code').value = code;
-        
-        this.showNotification('✅ Code collé automatiquement! Vous pouvez maintenant vous connecter.', 'success');
     }
 
     showMainApp() {
