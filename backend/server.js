@@ -216,6 +216,118 @@ app.get('/api/test-render-db', async (req, res) => {
   }
 });
 
+// 🚨 ROUTE TEMPORAIRE POUR CRÉER LES TABLES - À SUPPRIMER APRÈS
+app.get('/api/create-tables', async (req, res) => {
+  try {
+    console.log('🚀 Début de la création des tables...');
+    
+    // Table users
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        phone_number VARCHAR(20) UNIQUE NOT NULL,
+        username VARCHAR(50) UNIQUE NOT NULL,
+        verification_code VARCHAR(10),
+        verification_code_expires TIMESTAMP,
+        last_verification_code VARCHAR(10),
+        last_code_expires TIMESTAMP,
+        is_verified BOOLEAN DEFAULT FALSE,
+        last_login TIMESTAMP,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('✅ Table users créée');
+
+    // Table denunciation_types
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS denunciation_types (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(50) UNIQUE NOT NULL,
+        color VARCHAR(7) DEFAULT '#3498db',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('✅ Table denunciation_types créée');
+
+    // Insert types
+    await pool.query(`
+      INSERT INTO denunciation_types (name, color) VALUES 
+      ('corruption', '#e74c3c'),
+      ('viol', '#9b59b6'),
+      ('vole', '#f39c12'),
+      ('arrestation_arbitraire', '#34495e'),
+      ('agressions', '#e67e22'),
+      ('enlevement', '#c0392b'),
+      ('autres', '#95a5a6')
+      ON CONFLICT (name) DO NOTHING
+    `);
+    console.log('✅ Types de violations insérés');
+
+    // Table posts
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS posts (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id),
+        type_id INTEGER REFERENCES denunciation_types(id),
+        title VARCHAR(255) NOT NULL,
+        description TEXT,
+        evidence_url VARCHAR(500),
+        evidence_type VARCHAR(20),
+        file_size INTEGER,
+        latitude DECIMAL(10, 8),
+        longitude DECIMAL(11, 8),
+        location_name VARCHAR(255),
+        is_approved BOOLEAN DEFAULT TRUE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('✅ Table posts créée');
+
+    // Table comments
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS comments (
+        id SERIAL PRIMARY KEY,
+        post_id INTEGER REFERENCES posts(id),
+        user_id INTEGER REFERENCES users(id),
+        parent_comment_id INTEGER REFERENCES comments(id),
+        content TEXT NOT NULL,
+        evidence_url VARCHAR(500),
+        evidence_type VARCHAR(20),
+        file_size INTEGER,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('✅ Table comments créée');
+
+    // Table contacts
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS contacts (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(100) NOT NULL,
+        subject VARCHAR(200) NOT NULL,
+        message TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log('✅ Table contacts créée');
+
+    console.log('🎉 TOUTES LES TABLES CRÉÉES AVEC SUCCÈS !');
+    
+    res.json({ 
+      success: true, 
+      message: '🎉 Tables créées avec succès ! L\'application va fonctionner maintenant.' 
+    });
+    
+  } catch (error) {
+    console.error('❌ Erreur création tables:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
 // ✅ ROUTE POUR LA PAGE DE PARTAGE
 app.get('/api/share-info', (req, res) => {
   const networkIPs = getNetworkIPs();
