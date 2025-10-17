@@ -8,11 +8,12 @@ import { SplashScreen } from '@capacitor/splash-screen';
 
 class MobileDenonciationApp {
     constructor() {
-        // ✅ UTILISER L'URL RENDER.COM
         this.API_BASE_URL = 'https://denonciation-app.onrender.com';
         this.currentUser = null;
         this.token = null;
         this.isNative = Capacitor.isNativePlatform();
+        this.currentCategory = null;
+        this.currentCodeData = null;
         
         this.init();
     }
@@ -22,20 +23,15 @@ class MobileDenonciationApp {
         this.setupEventListeners();
         this.checkAuthentication();
         this.loadInitialData();
-        
-        // ✅ TESTER LA CONNEXION AU DÉMARRAGE
-        this.testConnection();
     }
 
     async setupCapacitor() {
-        // Cacher le splash screen
         try {
             await SplashScreen.hide();
         } catch (error) {
             console.log('Splash screen already hidden');
         }
 
-        // Gérer le bouton retour Android
         if (this.isNative) {
             App.addListener('backButton', (data) => {
                 if (!data.canGoBack) {
@@ -45,62 +41,48 @@ class MobileDenonciationApp {
         }
     }
 
-    // ✅ NOUVELLE FONCTION POUR TESTER LA CONNEXION
-    async testConnection() {
-        try {
-            const response = await fetch(`${this.API_BASE_URL}/api/test-db`);
-            const data = await response.json();
-            console.log('✅ Connexion serveur:', data.status);
-            
-            if (this.isNative) {
-                await Toast.show({
-                    text: 'Serveur connecté',
-                    duration: 'short'
-                });
-            }
-        } catch (error) {
-            console.error('❌ Erreur connexion serveur:', error);
-            if (this.isNative) {
-                await Toast.show({
-                    text: 'Erreur connexion serveur',
-                    duration: 'long'
-                });
-            }
-        }
-    }
-
     setupEventListeners() {
-        // Navigation
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
                 const page = item.dataset.page;
                 this.showPage(page);
                 
-                // Mettre à jour la navigation active
                 document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
                 item.classList.add('active');
             });
         });
 
-        // Formulaires
         document.getElementById('login-form').addEventListener('submit', (e) => this.handleLogin(e));
         document.getElementById('register-form').addEventListener('submit', (e) => this.handleRegister(e));
         document.getElementById('report-form').addEventListener('submit', (e) => this.handleReport(e));
+        document.getElementById('request-reconnect').addEventListener('click', () => this.handleReconnect());
 
-        // ✅ AJOUTER LE BOUTON DE RECONNEXION
-        document.getElementById('request-reconnect')?.addEventListener('click', () => this.handleReconnect());
-
-        // Gestion des fichiers
         document.getElementById('report-evidence').addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
                 document.getElementById('file-name').textContent = `Fichier: ${file.name}`;
+                this.analyzeEvidence(file);
             }
         });
 
-        // ✅ AJOUTER LE BOUTON APPAREIL PHOTO
-        document.getElementById('camera-btn')?.addEventListener('click', () => this.takePhoto());
+        const titleInput = document.getElementById('report-title');
+        const descInput = document.getElementById('report-description');
+        
+        if (titleInput && descInput) {
+            let fakeDetectionTimeout;
+            const performFakeDetection = () => {
+                clearTimeout(fakeDetectionTimeout);
+                fakeDetectionTimeout = setTimeout(() => {
+                    if (titleInput.value.length > 10 || descInput.value.length > 50) {
+                        this.performFakeNewsDetection(titleInput.value, descInput.value);
+                    }
+                }, 1000);
+            };
+            
+            titleInput.addEventListener('input', performFakeDetection);
+            descInput.addEventListener('input', performFakeDetection);
+        }
     }
 
     async checkAuthentication() {
@@ -159,12 +141,11 @@ class MobileDenonciationApp {
         document.getElementById('register-modal').style.display = 'flex';
     }
 
-    // ✅ FONCTION DE RECONNEXION POUR ANCIENS UTILISATEURS
     async handleReconnect() {
         const phoneNumber = document.getElementById('login-phone').value;
         
         if (!phoneNumber) {
-            this.showToast('Veuillez d\'abord entrer votre numéro', 'error');
+            this.showToast('Veuillez d\'abord entrer votre numéro');
             return;
         }
 
@@ -178,13 +159,12 @@ class MobileDenonciationApp {
             const result = await response.json();
 
             if (result.success) {
-                // ✅ AFFICHER LE CODE DIRECTEMENT À L'UTILISATEUR
                 this.showCodeModal(result.code, result.username, result.phoneNumber, 'reconnect');
             } else {
-                this.showToast(result.error, 'error');
+                this.showToast(result.error);
             }
         } catch (error) {
-            this.showToast('Erreur de connexion', 'error');
+            this.showToast('Erreur de connexion');
         }
     }
 
@@ -219,10 +199,10 @@ class MobileDenonciationApp {
                 this.updateProfile();
                 this.showToast('Connexion réussie!');
             } else {
-                this.showToast(result.error, 'error');
+                this.showToast(result.error);
             }
         } catch (error) {
-            this.showToast('Erreur de connexion', 'error');
+            this.showToast('Erreur de connexion');
         }
     }
 
@@ -241,99 +221,58 @@ class MobileDenonciationApp {
             const result = await response.json();
 
             if (result.success) {
-                // ✅ AFFICHER LE CODE DIRECTEMENT À L'UTILISATEUR
                 this.showCodeModal(result.code, result.username, result.phoneNumber, 'register');
             } else {
-                this.showToast(result.error, 'error');
+                this.showToast(result.error);
             }
         } catch (error) {
-            this.showToast('Erreur d\'inscription', 'error');
+            this.showToast('Erreur d\'inscription');
         }
     }
 
-    // ✅ FONCTION POUR AFFICHER LE CODE
     showCodeModal(code, username, phoneNumber, type = 'register') {
-        const title = type === 'register' ? 'Inscription Réussie' : 'Nouveau Code de Reconnexion';
+        this.currentCodeData = { code, username, phoneNumber, type };
+        
+        const title = type === 'register' ? 'Inscription Réussie' : 'Nouveau Code';
         const message = type === 'register' 
             ? 'Utilisez ce code pour vous connecter' 
-            : 'Utilisez ce nouveau code pour vous reconnecter';
+            : 'Utilisez ce code pour vous reconnecter';
         
-        const modal = document.createElement('div');
-        modal.className = 'mobile-modal';
-        modal.id = 'code-modal';
-        modal.style.display = 'flex';
-        modal.innerHTML = `
-            <div class="modal-content">
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <div style="width: 60px; height: 60px; background: #27ae60; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; color: white; font-size: 1.5rem;">
-                        <i class="fas fa-key"></i>
-                    </div>
-                    <h3>${title}</h3>
-                    <p style="color: #666;">${message}</p>
-                </div>
-                
-                <div style="text-align: center; padding: 1rem;">
-                    <div style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">
-                        Pour: <strong>${username}</strong> (${phoneNumber})
-                    </div>
-                    
-                    <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; border: 2px dashed #3498db; margin: 1rem 0;">
-                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">Votre code de vérification:</div>
-                        <div style="font-size: 2rem; font-weight: bold; color: #e74c3c; letter-spacing: 3px; margin: 1rem 0; font-family: monospace;">
-                            ${code}
-                        </div>
-                        <div style="font-size: 0.8rem; color: #e67e22;">
-                            ⏰ Expire dans 10 minutes
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin: 1rem 0;">
-                        <button class="mobile-btn" onclick="app.copyCode('${code}')">
-                            <i class="fas fa-copy"></i> Copier
-                        </button>
-                        
-                        <button class="mobile-btn mobile-btn-outline" onclick="app.returnToLogin('${code}', '${phoneNumber}')">
-                            <i class="fas fa-arrow-left"></i> Connexion
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
+        document.getElementById('mobile-code-title').textContent = title;
+        document.getElementById('mobile-code-message').textContent = message;
+        document.getElementById('mobile-code-user').textContent = `Pour: ${username} (${phoneNumber})`;
+        document.getElementById('mobile-code-value').textContent = code;
         
-        document.body.appendChild(modal);
+        document.getElementById('code-modal').style.display = 'flex';
         
-        // Copier automatiquement le code pour la reconnexion
         if (type === 'reconnect') {
-            this.copyCode(code);
+            this.copyCode();
         }
     }
 
-    // ✅ FONCTION POUR COPIER LE CODE
-    async copyCode(code) {
+    async copyCode() {
+        if (!this.currentCodeData) return;
+        
         if (this.isNative) {
-            // Pour mobile, on utilise le presse-papier natif
             await Toast.show({
                 text: 'Code copié!',
                 duration: 'short'
             });
         } else {
-            // Pour le web
-            navigator.clipboard.writeText(code).then(() => {
+            navigator.clipboard.writeText(this.currentCodeData.code).then(() => {
                 this.showToast('Code copié!');
             });
         }
     }
 
-    // ✅ FONCTION POUR RETOURNER À LA CONNEXION
-    returnToLogin(code, phoneNumber) {
-        document.getElementById('code-modal').remove();
+    returnToLogin() {
+        if (!this.currentCodeData) return;
         
-        // Rediriger vers le modal de connexion
+        document.getElementById('code-modal').style.display = 'none';
         this.showLogin();
         
-        // Pré-remplir automatiquement
-        document.getElementById('login-phone').value = phoneNumber;
-        document.getElementById('login-code').value = code;
+        document.getElementById('login-phone').value = this.currentCodeData.phoneNumber;
+        document.getElementById('login-code').value = this.currentCodeData.code;
         
         this.showToast('Code collé automatiquement!');
     }
@@ -342,7 +281,7 @@ class MobileDenonciationApp {
         e.preventDefault();
         
         if (!this.token) {
-            this.showToast('Veuillez vous connecter', 'error');
+            this.showToast('Veuillez vous connecter');
             this.showAuthModal();
             return;
         }
@@ -355,7 +294,7 @@ class MobileDenonciationApp {
         
         const evidenceFile = document.getElementById('report-evidence').files[0];
         if (!evidenceFile) {
-            this.showToast('Une preuve est obligatoire', 'error');
+            this.showToast('Une preuve est obligatoire');
             return;
         }
         formData.append('evidence', evidenceFile);
@@ -374,16 +313,17 @@ class MobileDenonciationApp {
             const result = await response.json();
 
             if (result.success) {
-                this.showToast('Signalement publié!');
+                this.showToast('Signalement publié avec IA!');
                 document.getElementById('report-form').reset();
                 document.getElementById('file-name').textContent = '';
+                document.getElementById('ai-analysis-mobile').style.display = 'none';
                 this.showPage('home');
                 this.loadPosts();
             } else {
-                this.showToast(result.error, 'error');
+                this.showToast(result.error);
             }
         } catch (error) {
-            this.showToast('Erreur de publication', 'error');
+            this.showToast('Erreur de publication');
         }
     }
 
@@ -402,62 +342,190 @@ class MobileDenonciationApp {
             document.getElementById('report-location').value = `Position: ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
             this.showToast('Position obtenue');
         } catch (error) {
-            this.showToast('Impossible d\'obtenir la position', 'error');
-            console.error('Erreur géolocalisation:', error);
+            this.showToast('Impossible d\'obtenir la position');
         }
     }
 
-    async takePhoto() {
+    async performFakeNewsDetection(title, description) {
         try {
-            const image = await Camera.getPhoto({
-                quality: 90,
-                allowEditing: false,
-                resultType: 'base64',
-                source: 'CAMERA',
-                direction: 'REAR'
+            const response = await fetch(`${this.API_BASE_URL}/api/ai/detect-fake`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: title,
+                    description: description,
+                    evidenceType: 'text'
+                })
             });
-
-            // Convertir base64 en blob
-            const response = await fetch(`data:image/jpeg;base64,${image.base64String}`);
-            const blob = await response.blob();
-            const file = new File([blob], `photo_${Date.now()}.jpg`, { type: 'image/jpeg' });
             
-            // Mettre à jour l'input file
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            document.getElementById('report-evidence').files = dataTransfer.files;
-            document.getElementById('file-name').textContent = `Fichier: ${file.name}`;
-            
-            this.showToast('Photo prise!');
-            
+            const result = await response.json();
+            this.displayMobileAnalysis(result.analysis, 'fake');
         } catch (error) {
-            if (error.message !== 'User cancelled photos app') {
-                this.showToast('Erreur appareil photo', 'error');
-            }
+            console.error('Erreur détection fake news:', error);
         }
     }
 
-    showPage(pageName) {
-        // Cacher toutes les pages
-        document.querySelectorAll('.page').forEach(page => {
-            page.classList.remove('active');
-        });
-
-        // Afficher la page demandée
-        document.getElementById(`${pageName}-page`).classList.add('active');
-
-        // Charger les données si nécessaire
-        switch (pageName) {
-            case 'home':
-                this.loadPosts();
-                break;
-            case 'map':
-                this.loadMap();
-                break;
-            case 'profile':
-                this.updateProfile();
-                break;
+    async analyzeEvidence(file) {
+        try {
+            const formData = new FormData();
+            formData.append('evidence', file);
+            
+            const response = await fetch(`${this.API_BASE_URL}/api/ai/analyze-evidence`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.token}`
+                },
+                body: formData
+            });
+            
+            const result = await response.json();
+            this.displayMobileAnalysis(result.analysis, 'evidence');
+        } catch (error) {
+            console.error('Erreur analyse preuve:', error);
         }
+    }
+
+    displayMobileAnalysis(analysis, type) {
+        const container = document.getElementById('mobile-analysis-result');
+        const panel = document.getElementById('ai-analysis-mobile');
+        
+        if (!analysis) {
+            panel.style.display = 'none';
+            return;
+        }
+        
+        let content = '';
+        if (type === 'fake') {
+            const score = analysis.fake_probability || 0;
+            content = `
+                <div style="font-size: 0.9rem;">
+                    <div style="margin-bottom: 5px;">
+                        <strong>Risque fake:</strong> ${score}%
+                    </div>
+                    <div>
+                        <strong>Crédibilité:</strong> ${analysis.credibility_score}%
+                    </div>
+                </div>
+            `;
+        } else {
+            const confidence = analysis.confidence || analysis.authenticity_score || 0;
+            content = `
+                <div style="font-size: 0.9rem;">
+                    <div style="margin-bottom: 5px;">
+                        <strong>Authenticité:</strong> ${Math.round(confidence * 100)}%
+                    </div>
+                    ${analysis.detectedObjects && analysis.detectedObjects.length > 0 ? `
+                        <div>
+                            <strong>Détecté:</strong> ${analysis.detectedObjects.slice(0, 2).join(', ')}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+        
+        container.innerHTML = content;
+        panel.style.display = 'block';
+    }
+
+    async loadCategories() {
+        try {
+            const response = await fetch(`${this.API_BASE_URL}/api/categories`);
+            const categories = await response.json();
+
+            this.renderMobileCategories(categories, 'mobile-categories');
+            this.renderMobileCategories(categories, 'all-categories');
+        } catch (error) {
+            console.error('Erreur chargement catégories:', error);
+        }
+    }
+
+    renderMobileCategories(categories, containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        const categoryIcons = {
+            'corruption': 'money-bill-wave',
+            'viol': 'female',
+            'vole': 'gem',
+            'arrestation_arbitraire': 'handcuffs',
+            'agressions': 'user-injured',
+            'enlevement': 'exclamation-triangle',
+            'autres': 'ellipsis-h'
+        };
+
+        container.innerHTML = categories.map(category => `
+            <div class="category-card" onclick="app.loadCategoryPosts('${category.name}')">
+                <i class="fas fa-${categoryIcons[category.name] || 'folder'}" style="font-size: 1.5rem; color: #e74c3c; margin-bottom: 8px;"></i>
+                <div style="font-weight: bold; font-size: 0.9rem;">${this.formatCategoryName(category.name)}</div>
+                <div style="color: #666; font-size: 0.8rem;">${category.post_count} signalements</div>
+            </div>
+        `).join('');
+    }
+
+    async loadCategoryPosts(category) {
+        this.currentCategory = category;
+        this.showPage('categories');
+        
+        try {
+            const response = await fetch(`${this.API_BASE_URL}/api/categories/${category}/posts`);
+            const data = await response.json();
+            
+            const container = document.getElementById('category-posts-mobile');
+            container.innerHTML = '';
+            
+            if (data.posts.length === 0) {
+                container.innerHTML = `
+                    <div class="mobile-card" style="text-align: center; color: #666;">
+                        <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p>Aucun signalement dans cette catégorie</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            data.posts.forEach(post => {
+                const postElement = this.createPostElement(post);
+                container.appendChild(postElement);
+            });
+        } catch (error) {
+            this.showToast('Erreur chargement catégorie');
+        }
+    }
+
+    createPostElement(post) {
+        const div = document.createElement('div');
+        div.className = 'post-item';
+        
+        let aiHTML = '';
+        if (post.ai_analysis) {
+            const confidence = post.ai_analysis.confidence || 0;
+            aiHTML = `
+                <div class="ai-analysis-mobile">
+                    <div style="font-size: 0.8rem;">
+                        <i class="fas fa-robot"></i> IA: ${Math.round(confidence * 100)}% de confiance
+                    </div>
+                </div>
+            `;
+        }
+        
+        div.innerHTML = `
+            <div class="post-header">
+                <span class="post-type" style="background: ${post.color}">${this.formatCategoryName(post.type_name)}</span>
+                <span style="color: #666; font-size: 0.9rem;">${new Date(post.created_at).toLocaleDateString('fr-FR')}</span>
+            </div>
+            <div class="post-title">${post.title}</div>
+            <p style="margin-bottom: 10px; color: #666;">${post.description.substring(0, 100)}...</p>
+            ${aiHTML}
+            <div class="post-meta">
+                <span>par ${post.username}</span>
+                <span><i class="fas fa-comments"></i> ${post.comment_count || 0}</span>
+            </div>
+        `;
+
+        return div;
     }
 
     async loadPosts() {
@@ -483,86 +551,50 @@ class MobileDenonciationApp {
                 container.appendChild(postElement);
             });
 
-            // Mettre à jour les statistiques
-            document.getElementById('total-posts').textContent = posts.length;
-
         } catch (error) {
             console.error('Erreur chargement posts:', error);
-            this.showToast('Erreur chargement', 'error');
+            this.showToast('Erreur chargement');
         }
     }
 
-    createPostElement(post) {
-        const div = document.createElement('div');
-        div.className = 'post-item';
-        
-        div.innerHTML = `
-            <div class="post-header">
-                <span class="post-type" style="background: ${post.color}">${this.formatTypeName(post.type_name)}</span>
-                <span style="color: #666; font-size: 0.9rem;">${new Date(post.created_at).toLocaleDateString('fr-FR')}</span>
-            </div>
-            <div class="post-title">${post.title}</div>
-            <p style="margin-bottom: 10px; color: #666;">${post.description.substring(0, 100)}...</p>
-            <div class="post-meta">
-                <span>par ${post.username}</span>
-                <span><i class="fas fa-comments"></i> ${post.comment_count || 0}</span>
-            </div>
-        `;
-
-        div.addEventListener('click', () => {
-            this.showPostDetail(post);
+    showPage(pageName) {
+        document.querySelectorAll('.page').forEach(page => {
+            page.classList.remove('active');
         });
 
-        return div;
-    }
+        document.getElementById(`${pageName}-page`).classList.add('active');
 
-    showPostDetail(post) {
-        // Implémenter la vue détaillée du post
-        this.showToast(`Détails: ${post.title}`);
-    }
-
-    async loadMap() {
-        // Implémenter la carte interactive
-        const mapContainer = document.getElementById('map-container');
-        mapContainer.innerHTML = `
-            <div style="text-align: center; padding: 20px;">
-                <i class="fas fa-map-marked-alt" style="font-size: 3rem; color: #e74c3c; margin-bottom: 10px;"></i>
-                <h3>Carte Interactive</h3>
-                <p style="color: #666; margin-bottom: 15px;">Visualisation des signalements en temps réel</p>
-                <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">Serveur: ${this.API_BASE_URL}</p>
-                <button class="mobile-btn mobile-btn-outline" onclick="app.refreshMap()">
-                    <i class="fas fa-sync"></i> Actualiser
-                </button>
-            </div>
-        `;
-    }
-
-    refreshMap() {
-        this.showToast('Carte actualisée');
+        switch (pageName) {
+            case 'home':
+                this.loadPosts();
+                this.loadCategories();
+                break;
+            case 'categories':
+                if (this.currentCategory) {
+                    this.loadCategoryPosts(this.currentCategory);
+                }
+                break;
+            case 'stats':
+                this.loadIAStats();
+                break;
+        }
     }
 
     updateProfile() {
         if (this.currentUser) {
             document.getElementById('profile-username').textContent = this.currentUser.username;
             document.getElementById('profile-phone').textContent = this.currentUser.phoneNumber || '+243 ...';
-            
-            // Charger les statistiques utilisateur
-            this.loadUserStats();
         }
     }
 
-    async loadUserStats() {
-        // Implémenter le chargement des stats utilisateur
-        document.getElementById('user-posts').textContent = '0';
-        document.getElementById('user-comments').textContent = '0';
+    async loadIAStats() {
+        document.getElementById('mobile-ai-analyzed').textContent = '150+';
+        document.getElementById('mobile-ai-confidence').textContent = '85%';
     }
 
     async loadInitialData() {
-        // Charger les données initiales
         this.loadPosts();
-        
-        // Simuler le nombre d'utilisateurs
-        document.getElementById('total-users').textContent = '150+';
+        this.loadCategories();
     }
 
     async logout() {
@@ -579,19 +611,18 @@ class MobileDenonciationApp {
         this.showToast('Déconnexion réussie');
     }
 
-    async showToast(message, type = 'success') {
+    async showToast(message) {
         if (this.isNative) {
             await Toast.show({
                 text: message,
-                duration: type === 'error' ? 'long' : 'short'
+                duration: 'short'
             });
         } else {
-            // Fallback pour le web
-            console.log(`${type.toUpperCase()}: ${message}`);
+            console.log('TOAST:', message);
         }
     }
 
-    formatTypeName(type) {
+    formatCategoryName(category) {
         const names = {
             'corruption': 'Corruption',
             'viol': 'Viol',
@@ -601,12 +632,9 @@ class MobileDenonciationApp {
             'enlevement': 'Enlèvement',
             'autres': 'Autres'
         };
-        return names[type] || type;
+        return names[category] || category;
     }
 }
 
-// Initialiser l'application
 const app = new MobileDenonciationApp();
-
-// Exposer l'application globalement pour les événements onclick
 window.app = app;

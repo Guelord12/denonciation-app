@@ -3,85 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dénonciation RDC - Connexion</title>
+    <title>🗣️ Dénonciation RDC - Lance-Voix</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
     <style>
-        .reconnect-section {
-            text-align: center;
-            margin-top: 1rem;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 8px;
+        .lance-voix-icon {
+            font-size: 1.8rem;
+            margin-right: 10px;
+            animation: pulse 2s infinite;
         }
         
-        .comments-section {
-            margin-top: 2rem;
-            padding: 1rem;
-            background: #f8f9fa;
-            border-radius: 8px;
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
         
-        .comment {
+        .ai-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            margin-left: 8px;
+        }
+        
+        .category-filter {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .category-btn {
+            padding: 10px 20px;
+            border: 2px solid #e74c3c;
+            border-radius: 25px;
             background: white;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .comment-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-        }
-        
-        .comment-user {
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        
-        .comment-date {
-            color: #666;
-            font-size: 0.9rem;
-        }
-        
-        .comment-content {
-            margin-bottom: 0.5rem;
-        }
-        
-        .comment-evidence {
-            max-width: 200px;
-            margin: 0.5rem 0;
-            border-radius: 4px;
-        }
-        
-        .comment-actions {
-            display: flex;
-            gap: 1rem;
-        }
-        
-        .reply-btn {
-            background: none;
-            border: none;
-            color: #3498db;
+            color: #e74c3c;
             cursor: pointer;
-            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         
-        .reply-form {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: #f1f1f1;
-            border-radius: 8px;
+        .category-btn.active {
+            background: #e74c3c;
+            color: white;
         }
         
-        .replies-section {
-            margin-left: 2rem;
-            margin-top: 1rem;
-            border-left: 2px solid #3498db;
-            padding-left: 1rem;
+        .ai-analysis-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+        }
+        
+        .ai-score {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .score-high { background: #27ae60; color: white; }
+        .score-medium { background: #f39c12; color: white; }
+        .score-low { background: #e74c3c; color: white; }
+        
+        .analytics-dashboard {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
         }
     </style>
 </head>
@@ -91,10 +99,14 @@
         <div class="modal-content auth-modal">
             <div class="auth-header">
                 <div class="app-icon">
-                    <i class="fas fa-shield-alt"></i>
+                    <span class="lance-voix-icon">🗣️</span>
                 </div>
-                <h2>Connexion</h2>
-                <p>Accédez à votre compte Dénonciation RDC</p>
+                <h2>
+                    <span class="lance-voix-icon">🗣️</span>
+                    Dénonciation RDC
+                    <span class="ai-badge">IA</span>
+                </h2>
+                <p>Plateforme sécurisée avec intelligence artificielle</p>
             </div>
             
             <form id="login-form" class="auth-form">
@@ -113,7 +125,6 @@
                 </button>
             </form>
             
-            <!-- SECTION RECONNEXION POUR ANCIENS UTILISATEURS -->
             <div class="reconnect-section">
                 <p>Ancien utilisateur sans code?</p>
                 <button type="button" id="request-reconnect" class="btn btn-outline">
@@ -132,9 +143,13 @@
         <div class="modal-content auth-modal">
             <div class="auth-header">
                 <div class="app-icon">
-                    <i class="fas fa-shield-alt"></i>
+                    <span class="lance-voix-icon">🗣️</span>
                 </div>
-                <h2>Inscription</h2>
+                <h2>
+                    <span class="lance-voix-icon">🗣️</span>
+                    Inscription
+                    <span class="ai-badge">IA</span>
+                </h2>
                 <p>Créez votre compte Dénonciation RDC</p>
             </div>
             
@@ -160,19 +175,36 @@
         </div>
     </div>
 
-    <!-- Application Principale (cachée au début) -->
+    <!-- Application Principale -->
     <div id="main-app" class="hidden">
         <header class="header">
             <div class="container">
                 <div class="logo">
-                    <h1><i class="fas fa-shield-alt"></i> Dénonciation RDC</h1>
+                    <h1>
+                        <span class="lance-voix-icon">🗣️</span>
+                        Dénonciation RDC
+                        <span class="ai-badge">IA</span>
+                    </h1>
                 </div>
                 <nav class="nav">
-                    <a href="#" class="nav-link active" data-page="home">Accueil</a>
-                    <a href="#" class="nav-link" data-page="report">Signaler</a>
-                    <a href="#" class="nav-link" data-page="map">Carte</a>
-                    <a href="#" class="nav-link" data-page="stats">Statistiques</a>
-                    <a href="#" class="nav-link" data-page="contact">Contact</a>
+                    <a href="#" class="nav-link active" data-page="home">
+                        <i class="fas fa-home"></i> Accueil
+                    </a>
+                    <a href="#" class="nav-link" data-page="report">
+                        <i class="fas fa-flag"></i> Signaler
+                    </a>
+                    <a href="#" class="nav-link" data-page="categories">
+                        <i class="fas fa-folder"></i> Catégories
+                    </a>
+                    <a href="#" class="nav-link" data-page="map">
+                        <i class="fas fa-map"></i> Carte
+                    </a>
+                    <a href="#" class="nav-link" data-page="stats">
+                        <i class="fas fa-chart-bar"></i> Stats IA
+                    </a>
+                    <a href="#" class="nav-link" data-page="contact">
+                        <i class="fas fa-envelope"></i> Contact
+                    </a>
                     <div class="user-menu">
                         <span id="username-display"></span>
                         <button id="logout-btn" class="btn btn-outline">
@@ -189,48 +221,44 @@
                 <section class="hero">
                     <div class="container">
                         <h2>Bienvenue, <span id="welcome-username"></span> !</h2>
-                        <p>Plateforme sécurisée pour dénoncer les violations en RDC</p>
+                        <p>Plateforme sécurisée avec intelligence artificielle pour dénoncer les violations en RDC</p>
+                        <div class="ai-features" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0;">
+                            <div class="feature-card" style="text-align: center;">
+                                <i class="fas fa-robot" style="color: #667eea; font-size: 2rem;"></i>
+                                <h4>Analyse IA</h4>
+                                <p>Vérification automatique des preuves</p>
+                            </div>
+                            <div class="feature-card" style="text-align: center;">
+                                <i class="fas fa-shield-alt" style="color: #27ae60; font-size: 2rem;"></i>
+                                <h4>Anti-Fake</h4>
+                                <p>Détection des fausses informations</p>
+                            </div>
+                            <div class="feature-card" style="text-align: center;">
+                                <i class="fas fa-chart-line" style="color: #e74c3c; font-size: 2rem;"></i>
+                                <h4>Analytique</h4>
+                                <p>Analyses avancées des données</p>
+                            </div>
+                        </div>
                         <button class="btn btn-large btn-primary" data-page="report">
-                            Faire un Signalement <i class="fas fa-arrow-right"></i>
+                            <i class="fas fa-flag"></i> Faire un Signalement IA
                         </button>
                     </div>
                 </section>
 
-                <section class="features">
+                <!-- Filtres par catégories -->
+                <section class="categories-section">
                     <div class="container">
-                        <h3>Types de Violations</h3>
-                        <div class="features-grid">
-                            <div class="feature-card" data-type="corruption">
-                                <i class="fas fa-money-bill-wave"></i>
-                                <h4>Corruption</h4>
-                            </div>
-                            <div class="feature-card" data-type="viol">
-                                <i class="fas fa-female"></i>
-                                <h4>Viol</h4>
-                            </div>
-                            <div class="feature-card" data-type="vole">
-                                <i class="fas fa-gem"></i>
-                                <h4>Vol</h4>
-                            </div>
-                            <div class="feature-card" data-type="arrestation_arbitraire">
-                                <i class="fas fa-handcuffs"></i>
-                                <h4>Arrestation Arbitraire</h4>
-                            </div>
-                            <div class="feature-card" data-type="agressions">
-                                <i class="fas fa-user-injured"></i>
-                                <h4>Agressions</h4>
-                            </div>
-                            <div class="feature-card" data-type="enlevement">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <h4>Enlèvement</h4>
-                            </div>
+                        <h3><i class="fas fa-filter"></i> Filtrer par Catégorie</h3>
+                        <div class="category-filter" id="category-filter">
+                            <!-- Généré dynamiquement -->
                         </div>
                     </div>
                 </section>
 
+                <!-- Signalements récents -->
                 <section class="recent-posts">
                     <div class="container">
-                        <h3>Signalements Récents</h3>
+                        <h3><i class="fas fa-bell"></i> Signalements Récents Analysés par IA</h3>
                         <div id="posts-container" class="posts-grid">
                             <!-- Chargement dynamique -->
                         </div>
@@ -238,10 +266,23 @@
                 </section>
             </div>
 
+            <!-- Page Catégories -->
+            <div id="categories-page" class="page">
+                <div class="container">
+                    <h2><i class="fas fa-folder"></i> Parcourir par Catégories</h2>
+                    <div class="category-filter" id="categories-full-filter">
+                        <!-- Toutes les catégories -->
+                    </div>
+                    <div id="category-posts-container" class="posts-grid">
+                        <!-- Posts de la catégorie sélectionnée -->
+                    </div>
+                </div>
+            </div>
+
             <!-- Page de signalement -->
             <div id="report-page" class="page">
                 <div class="container">
-                    <h2><i class="fas fa-flag"></i> Nouveau Signalement</h2>
+                    <h2><i class="fas fa-flag"></i> Nouveau Signalement avec IA</h2>
                     <form id="report-form" class="report-form">
                         <div class="form-group">
                             <label for="report-type">Type de Violation *</label>
@@ -267,6 +308,11 @@
                             <textarea id="report-description" placeholder="Décrivez en détail ce qui s'est passé..." required></textarea>
                         </div>
 
+                        <div class="ai-analysis-panel" id="ai-fake-detection" style="display: none;">
+                            <h4><i class="fas fa-robot"></i> Analyse IA en Temps Réel</h4>
+                            <div id="fake-analysis-result"></div>
+                        </div>
+
                         <div class="form-group">
                             <label for="report-location">Localisation</label>
                             <input type="text" id="report-location" placeholder="Lieu exact ou approximatif">
@@ -278,11 +324,16 @@
                         <div class="form-group">
                             <label for="report-evidence">Preuve (Image/Vidéo/Document) *</label>
                             <input type="file" id="report-evidence" accept="image/*,video/*,.pdf,.doc,.docx" required>
-                            <small>Formats acceptés: JPG, PNG, GIF, MP4, PDF, DOC (max 50MB)</small>
+                            <small>L'IA analysera automatiquement votre preuve pour détecter les falsifications</small>
+                        </div>
+
+                        <div class="ai-analysis-panel" id="ai-evidence-analysis" style="display: none;">
+                            <h4><i class="fas fa-search"></i> Analyse IA de la Preuve</h4>
+                            <div id="evidence-analysis-result"></div>
                         </div>
 
                         <button type="submit" class="btn btn-primary btn-large">
-                            <i class="fas fa-paper-plane"></i> Publier le Signalement
+                            <i class="fas fa-paper-plane"></i> Publier avec Vérification IA
                         </button>
                     </form>
                 </div>
@@ -305,16 +356,31 @@
                 </div>
             </div>
 
-            <!-- Page statistiques -->
+            <!-- Page statistiques IA -->
             <div id="stats-page" class="page">
                 <div class="container">
-                    <h2><i class="fas fa-chart-bar"></i> Statistiques</h2>
-                    <div class="stats-container">
-                        <div class="stats-grid" id="stats-grid">
-                            <!-- Statistiques dynamiques -->
+                    <h2><i class="fas fa-chart-bar"></i> Tableau de Bord IA</h2>
+                    <div class="analytics-dashboard">
+                        <h3><i class="fas fa-robot"></i> Analyse par Intelligence Artificielle</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <i class="fas fa-images"></i>
+                                <div class="stat-value" id="ai-analyzed">0</div>
+                                <div class="stat-label">Preuves analysées</div>
+                            </div>
+                            <div class="stat-card">
+                                <i class="fas fa-shield-alt"></i>
+                                <div class="stat-value" id="ai-authentic">0%</div>
+                                <div class="stat-label">Authenticité moyenne</div>
+                            </div>
+                            <div class="stat-card">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <div class="stat-value" id="ai-risks">0</div>
+                                <div class="stat-label">Risques détectés</div>
+                            </div>
                         </div>
                         <div class="chart-container">
-                            <canvas id="stats-chart"></canvas>
+                            <canvas id="ai-analysis-chart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -331,23 +397,6 @@
                             <div class="contact-item">
                                 <i class="fas fa-envelope"></i>
                                 <span>kayayaguelord8@gmail.com</span>
-                            </div>
-                            
-                            <div class="ai-assistance">
-                                <h4><i class="fas fa-robot"></i> Assistance IA</h4>
-                                <div class="ai-chat">
-                                    <div id="ai-messages" class="ai-messages">
-                                        <div class="ai-message bot">
-                                            <strong>Assistant IA:</strong> Bonjour! Comment puis-je vous aider?
-                                        </div>
-                                    </div>
-                                    <div class="ai-input">
-                                        <input type="text" id="ai-question" placeholder="Posez votre question...">
-                                        <button id="ai-send" class="btn btn-primary">
-                                            <i class="fas fa-paper-plane"></i>
-                                        </button>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         
@@ -378,24 +427,53 @@
             <div class="container">
                 <div class="footer-content">
                     <div class="footer-section">
-                        <h4>Dénonciation RDC</h4>
-                        <p>Plateforme citoyenne de signalement</p>
+                        <h4>
+                            <span class="lance-voix-icon">🗣️</span>
+                            Dénonciation RDC
+                        </h4>
+                        <p>Plateforme citoyenne de signalement avec IA</p>
                     </div>
                     <div class="footer-section">
                         <h4>Mentions</h4>
                         <p>By Ir Guelord KAYAYA</p>
                         <p>Copyright 2025</p>
-                        <p>Fonctionnement Exclusive en RDC</p>
-                    </div>
-                    <div class="footer-section">
-                        <h4>Liens Utiles</h4>
-                        <a href="/share" class="footer-link">
-                            <i class="fas fa-share-alt"></i> Partager l'App
-                        </a>
                     </div>
                 </div>
             </div>
         </footer>
+    </div>
+
+    <!-- Modal pour afficher les codes -->
+    <div id="code-modal" class="modal">
+        <div class="modal-content auth-modal" style="max-width: 500px;">
+            <div class="auth-header">
+                <div class="app-icon" style="background: #27ae60;">
+                    <i class="fas fa-key"></i>
+                </div>
+                <h2 id="code-modal-title">Code de Vérification</h2>
+                <p id="code-modal-message">Utilisez ce code pour vous connecter</p>
+            </div>
+            
+            <div style="text-align: center; padding: 1rem;">
+                <div style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;" id="code-user-info"></div>
+                
+                <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; border: 2px dashed #3498db; margin: 1rem 0;">
+                    <div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">Votre code de vérification:</div>
+                    <div style="font-size: 2.5rem; font-weight: bold; color: #e74c3c; letter-spacing: 5px; margin: 1rem 0; font-family: 'Courier New', monospace;" id="code-value"></div>
+                    <div style="font-size: 0.8rem; color: #e67e22;">⏰ Expire dans 10 minutes</div>
+                </div>
+                
+                <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin: 1rem 0;">
+                    <button class="btn btn-primary" id="copy-code-btn">
+                        <i class="fas fa-copy"></i> Copier le Code
+                    </button>
+                    
+                    <button class="btn btn-secondary" id="return-login-btn">
+                        <i class="fas fa-arrow-left"></i> Retour à la connexion
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Notifications -->
