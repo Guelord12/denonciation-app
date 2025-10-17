@@ -1,11 +1,22 @@
 {
   "name": "denonciation-rdc-mobile",
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "description": "Application mobile de dénonciation des violations en RDC avec IA",
+  "main": "src/index.js",
   "scripts": {
     "build": "webpack --mode production",
     "dev": "webpack serve --mode development",
     "cap:sync": "npx cap sync",
     "cap:open:android": "npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor/core": "^5.0.0",
+    "@capacitor/app": "^5.0.0",
+    "@capacitor/camera": "^5.0.0",
+    "@capacitor/geolocation": "^5.0.0",
+    "@capacitor/preferences": "^5.0.0",
+    "@capacitor/toast": "^5.0.0",
+    "@capacitor/splash-screen": "^5.0.0"
   },
   "devDependencies": {
     "webpack": "^5.88.0",
@@ -15,15 +26,5 @@
     "copy-webpack-plugin": "^11.0.0",
     "style-loader": "^3.3.3",
     "css-loader": "^6.8.1"
-  },
-  "dependencies": {
-    "@capacitor/android": "^5.0.0",
-    "@capacitor/core": "^5.0.0",
-    "@capacitor/app": "^5.0.0",
-    "@capacitor/camera": "^5.0.0",
-    "@capacitor/geolocation": "^5.0.0",
-    "@capacitor/preferences": "^5.0.0",
-    "@capacitor/toast": "^5.0.0",
-    "@capacitor/splash-screen": "^5.0.0"
   }
 }

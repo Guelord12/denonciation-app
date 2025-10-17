@@ -1,5 +1,4 @@
-<!doctype html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#e74c3c"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Dénonciation RDC</title><link rel="apple-touch-icon" href="assets/icons/icon-192.png"><link rel="apple-touch-startup-image" href="assets/splash/ios-splash.png"><link rel="icon" type="image/png" href="assets/icons/icon-192.png"><link rel="manifest" href="manifest.json"><style>/* Reset et styles de base pour mobile */
-        * {
+<!doctype html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#e74c3c"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>🗣️ Dénonciation RDC</title><style>* {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -14,7 +13,6 @@
             padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
         
-        /* Safe area pour iPhone X et supérieurs */
         .safe-area {
             padding-top: constant(safe-area-inset-top);
             padding-top: env(safe-area-inset-top);
@@ -22,7 +20,6 @@
             padding-bottom: env(safe-area-inset-bottom);
         }
         
-        /* Header mobile */
         .mobile-header {
             background: linear-gradient(135deg, #e74c3c, #c0392b);
             color: white;
@@ -40,32 +37,25 @@
         }
         
         .header-title {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        /* ✅ LOGO LANCE-VOIX AJOUTÉ */
-        .logo-lance-voix {
-            font-size: 1.4rem;
             display: flex;
             align-items: center;
             gap: 8px;
         }
         
         .lance-voix-icon {
-            font-size: 1.6rem;
+            font-size: 1.3rem;
+        }
+        
+        .ai-badge-mobile {
+            background: #667eea;
             color: white;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 0.6rem;
         }
         
-        .header-actions {
-            display: flex;
-            gap: 15px;
-        }
-        
-        /* Navigation mobile */
         .mobile-nav {
             position: fixed;
             bottom: 0;
@@ -102,7 +92,6 @@
             margin-bottom: 2px;
         }
         
-        /* Contenu principal */
         .main-content {
             margin-top: 60px;
             margin-bottom: 70px;
@@ -111,7 +100,6 @@
             overflow-y: auto;
         }
         
-        /* Cards mobiles */
         .mobile-card {
             background: white;
             border-radius: 15px;
@@ -125,7 +113,6 @@
             transform: scale(0.98);
         }
         
-        /* Boutons mobiles */
         .mobile-btn {
             background: linear-gradient(135deg, #e74c3c, #c0392b);
             color: white;
@@ -154,7 +141,6 @@
             color: #e74c3c;
         }
         
-        /* ✅ BOUTON DÉCONNEXION STYLE DANGER */
         .mobile-btn-danger {
             background: transparent;
             border: 2px solid #e74c3c;
@@ -162,11 +148,6 @@
             background: rgba(231, 76, 60, 0.1);
         }
         
-        .mobile-btn-danger:active {
-            background: rgba(231, 76, 60, 0.2);
-        }
-        
-        /* Formulaires mobiles */
         .mobile-input {
             width: 100%;
             padding: 15px;
@@ -182,7 +163,6 @@
             border-color: #e74c3c;
         }
         
-        /* Modals mobiles */
         .mobile-modal {
             position: fixed;
             top: 0;
@@ -207,7 +187,6 @@
             overflow-y: auto;
         }
         
-        /* Liste des signalements */
         .post-list {
             display: flex;
             flex-direction: column;
@@ -249,7 +228,6 @@
             justify-content: space-between;
         }
         
-        /* Loading spinner */
         .loading {
             display: flex;
             justify-content: center;
@@ -271,77 +249,33 @@
             100% { transform: rotate(360deg); }
         }
         
-        /* Styles pour le code de vérification */
-        .code-display {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 10px;
-            border: 2px dashed #3498db;
-            margin: 1rem 0;
+        .mobile-categories {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .category-card {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
             text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
-        .code-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #e74c3c;
-            letter-spacing: 3px;
-            margin: 1rem 0;
-            font-family: 'Courier New', monospace;
+        .ai-analysis-mobile {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 3px solid #667eea;
         }
         
-        /* Responsive */
-        @media (max-width: 768px) {
-            .mobile-header {
-                padding: 15px 10px;
-            }
-            
-            .main-content {
-                padding: 10px;
-            }
-            
-            .logo-lance-voix {
-                font-size: 1.2rem;
-            }
-            
-            .lance-voix-icon {
-                font-size: 1.4rem;
-            }
+        .page {
+            display: none;
         }
         
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-            body {
-                background: #121212;
-                color: #ffffff;
-            }
-            
-            .mobile-card, .post-item {
-                background: #1e1e1e;
-                color: #ffffff;
-            }
-            
-            .mobile-input {
-                background: #2d2d2d;
-                border-color: #404040;
-                color: #ffffff;
-            }
-            
-            .mobile-nav {
-                background: #1e1e1e;
-                border-color: #333;
-            }
-            
-            .nav-item {
-                color: #888;
-            }
-            
-            .nav-item.active {
-                color: #e74c3c;
-            }
-            
-            .code-display {
-                background: #2d2d2d;
-                border-color: #3498db;
-            }
-        }</style><script defer="defer" src="bundle.js"></script></head><body class="safe-area"><header class="mobile-header"><div class="header-title"><div class="logo-lance-voix"><span class="lance-voix-icon">🗣️</span> <span>Dénonciation RDC</span></div></div><div class="header-actions"><button id="menu-btn" class="mobile-btn" style="padding: 8px; background: transparent;"><i class="fas fa-bars"></i></button></div></header><main class="main-content"><div id="home-page" class="page active"><div class="welcome-section"><h2 style="margin-bottom: 10px;">Bienvenue 👋</h2><p style="color: #666; margin-bottom: 20px;">Plateforme sécurisée de signalement</p></div><div style="margin: 20px 0;"><button class="mobile-btn" onclick="app.showPage('report')"><i class="fas fa-flag"></i> Nouveau Signalement</button></div><div class="stats-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0;"><div class="mobile-card" style="text-align: center;"><div style="font-size: 1.5rem; color: #e74c3c; margin-bottom: 5px;">📊</div><div style="font-size: 0.9rem; color: #666;">Signalements</div><div id="total-posts" style="font-weight: bold; font-size: 1.2rem;">0</div></div><div class="mobile-card" style="text-align: center;"><div style="font-size: 1.5rem; color: #3498db; margin-bottom: 5px;">👥</div><div style="font-size: 0.9rem; color: #666;">Utilisateurs</div><div id="total-users" style="font-weight: bold; font-size: 1.2rem;">0</div></div></div><h3 style="margin: 20px 0 10px 0;">Signalements Récents</h3><div id="posts-container" class="post-list"><div class="loading"><div class="spinner"></div></div></div></div><div id="report-page" class="page"><div style="margin-bottom: 20px;"><button class="mobile-btn mobile-btn-outline" onclick="app.showPage('home')"><i class="fas fa-arrow-left"></i> Retour</button></div><h2 style="margin-bottom: 20px;">Nouveau Signalement</h2><form id="report-form"><select class="mobile-input" id="report-type" required><option value="">Type de violation</option><option value="corruption">Corruption</option><option value="viol">Viol</option><option value="vole">Vol</option><option value="arrestation_arbitraire">Arrestation Arbitraire</option><option value="agressions">Agressions</option><option value="enlevement">Enlèvement</option><option value="autres">Autres</option></select> <input class="mobile-input" id="report-title" placeholder="Titre du signalement" required> <textarea class="mobile-input" id="report-description" placeholder="Description détaillée..." rows="4" required></textarea> <input class="mobile-input" id="report-location" placeholder="Localisation"><div style="margin-bottom: 15px;"><button type="button" class="mobile-btn mobile-btn-outline" onclick="app.getLocation()" style="margin-bottom: 10px;"><i class="fas fa-location-arrow"></i> Utiliser ma position</button></div><div style="margin-bottom: 15px;"><input type="file" id="report-evidence" accept="image/*,video/*" style="display: none;"> <button type="button" class="mobile-btn mobile-btn-outline" onclick="document.getElementById('report-evidence').click()" style="margin-bottom: 5px;"><i class="fas fa-folder-open"></i> Choisir un fichier</button> <button type="button" class="mobile-btn mobile-btn-outline" id="camera-btn" style="margin-bottom: 10px;"><i class="fas fa-camera"></i> Prendre une photo</button><div id="file-name" style="font-size: 0.9rem; color: #666; margin-top: 5px; text-align: center;"></div></div><button type="submit" class="mobile-btn"><i class="fas fa-paper-plane"></i> Publier le Signalement</button></form></div><div id="map-page" class="page"><div style="margin-bottom: 20px;"><button class="mobile-btn mobile-btn-outline" onclick="app.showPage('home')"><i class="fas fa-arrow-left"></i> Retour</button></div><h2 style="margin-bottom: 20px;">Carte des Signalements</h2><div id="map-container" style="height: 400px; background: #f0f0f0; border-radius: 15px; display: flex; align-items: center; justify-content: center; color: #666;"><div style="text-align: center;"><i class="fas fa-map-marked-alt" style="font-size: 3rem; margin-bottom: 10px;"></i><p>Carte interactive</p><p style="font-size: 0.9rem;">Serveur: denonciation-app.onrender.com</p></div></div></div><div id="profile-page" class="page"><div style="margin-bottom: 20px;"><button class="mobile-btn mobile-btn-outline" onclick="app.showPage('home')"><i class="fas fa-arrow-left"></i> Retour</button></div><div class="mobile-card" style="text-align: center;"><div style="width: 80px; height: 80px; background: #e74c3c; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; color: white; font-size: 2rem;"><i class="fas fa-user"></i></div><h3 id="profile-username">Utilisateur</h3><p id="profile-phone" style="color: #666; margin-bottom: 20px;">+243 ...</p><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;"><div><div style="font-weight: bold; font-size: 1.2rem;" id="user-posts">0</div><div style="color: #666; font-size: 0.9rem;">Signalements</div></div><div><div style="font-weight: bold; font-size: 1.2rem;" id="user-comments">0</div><div style="color: #666; font-size: 0.9rem;">Commentaires</div></div></div><button class="mobile-btn mobile-btn-danger" onclick="app.logout()" style="margin-bottom: 10px;"><i class="fas fa-sign-out-alt"></i> Déconnexion</button><div style="background: #f8f9fa; padding: 10px; border-radius: 8px; margin-top: 15px;"><p style="font-size: 0.8rem; color: #666; margin: 0;"><strong>Serveur:</strong> denonciation-app.onrender.com</p></div></div></div></main><nav class="mobile-nav"><a href="#" class="nav-item active" data-page="home"><i class="fas fa-home nav-icon"></i> <span>Accueil</span> </a><a href="#" class="nav-item" data-page="report"><i class="fas fa-flag nav-icon"></i> <span>Signaler</span> </a><a href="#" class="nav-item" data-page="map"><i class="fas fa-map nav-icon"></i> <span>Carte</span> </a><a href="#" class="nav-item" data-page="profile"><i class="fas fa-user nav-icon"></i> <span>Profil</span></a></nav><div id="auth-modal" class="mobile-modal" style="display: none;"><div class="modal-content"><div style="text-align: center; margin-bottom: 20px;"><div style="width: 60px; height: 60px; background: #e74c3c; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; color: white; font-size: 1.5rem;"><i class="fas fa-shield-alt"></i></div><h3>Connexion</h3><p style="color: #666; font-size: 0.9rem;">Serveur: denonciation-app.onrender.com</p></div><form id="login-form"><input type="tel" class="mobile-input" id="login-phone" placeholder="+243 XX XXX XXXX" required> <input class="mobile-input" id="login-code" placeholder="Code de vérification" required> <button type="submit" class="mobile-btn" style="margin-bottom: 15px;"><i class="fas fa-sign-in-alt"></i> Se Connecter</button></form><div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px;"><p style="margin-bottom: 10px; color: #666; text-align: center; font-size: 0.9rem;">Ancien utilisateur sans code?</p><button type="button" class="mobile-btn mobile-btn-outline" id="request-reconnect" style="width: 100%;"><i class="fas fa-sync-alt"></i> Demander un nouveau code</button></div><div style="text-align: center;"><p style="margin-bottom: 10px; color: #666;">Nouveau utilisateur?</p><button class="mobile-btn mobile-btn-outline" onclick="app.showRegister()"><i class="fas fa-user-plus"></i> Créer un compte</button></div></div></div><div id="register-modal" class="mobile-modal" style="display: none;"><div class="modal-content"><div style="text-align: center; margin-bottom: 20px;"><div style="width: 60px; height: 60px; background: #e74c3c; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; color: white; font-size: 1.5rem;"><i class="fas fa-user-plus"></i></div><h3>Inscription</h3><p style="color: #666; font-size: 0.9rem;">Serveur: denonciation-app.onrender.com</p></div><form id="register-form"><input type="tel" class="mobile-input" id="reg-phone" placeholder="+243810000000" required> <input class="mobile-input" id="reg-username" placeholder="Nom d'utilisateur" required> <button type="submit" class="mobile-btn" style="margin-bottom: 15px;"><i class="fas fa-user-plus"></i> S'inscrire</button></form><div style="text-align: center;"><button class="mobile-btn mobile-btn-outline" onclick="app.showLogin()"><i class="fas fa-arrow-left"></i> Retour à la connexion</button></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script><script src="bundle.js"></script></body></html>
+        .page.active {
+            display: block;
+        }</style><script defer="defer" src="bundle.js"></script></head><body class="safe-area"><header class="mobile-header"><div class="header-title"><span class="lance-voix-icon">🗣️</span> <span>Dénonciation RDC</span> <span class="ai-badge-mobile">IA</span></div></header><main class="main-content"><div id="home-page" class="page active"><div class="welcome-section"><h2 style="margin-bottom: 10px;">Bienvenue 👋</h2><p style="color: #666; margin-bottom: 20px;">Plateforme sécurisée avec IA</p></div><div style="margin: 20px 0;"><button class="mobile-btn" onclick="app.showPage('report')"><i class="fas fa-flag"></i> Nouveau Signalement IA</button></div><h3 style="margin: 20px 0 10px 0;">Catégories</h3><div class="mobile-categories" id="mobile-categories"><div class="loading"><div class="spinner"></div></div></div><h3 style="margin: 20px 0 10px 0;">Signalements Récents</h3><div id="posts-container" class="post-list"><div class="loading"><div class="spinner"></div></div></div></div><div id="report-page" class="page"><div style="margin-bottom: 20px;"><button class="mobile-btn mobile-btn-outline" onclick="app.showPage('home')"><i class="fas fa-arrow-left"></i> Retour</button></div><h2 style="margin-bottom: 20px;">Nouveau Signalement</h2><form id="report-form"><select class="mobile-input" id="report-type" required><option value="">Type de violation</option><option value="corruption">Corruption</option><option value="viol">Viol</option><option value="vole">Vol</option><option value="arrestation_arbitraire">Arrestation Arbitraire</option><option value="agressions">Agressions</option><option value="enlevement">Enlèvement</option><option value="autres">Autres</option></select> <input class="mobile-input" id="report-title" placeholder="Titre du signalement" required> <textarea class="mobile-input" id="report-description" placeholder="Description détaillée..." rows="4" required></textarea> <input class="mobile-input" id="report-location" placeholder="Localisation"><div style="margin-bottom: 15px;"><button type="button" class="mobile-btn mobile-btn-outline" onclick="app.getLocation()" style="margin-bottom: 10px;"><i class="fas fa-location-arrow"></i> Utiliser ma position</button></div><div style="margin-bottom: 15px;"><input type="file" id="report-evidence" accept="image/*,video/*" style="display: none;"> <button type="button" class="mobile-btn mobile-btn-outline" onclick="document.getElementById('report-evidence').click()"><i class="fas fa-folder-open"></i> Choisir un fichier</button><div id="file-name" style="font-size: 0.9rem; color: #666; margin-top: 5px; text-align: center;"></div></div><div id="ai-analysis-mobile" class="ai-analysis-mobile" style="display: none;"><h4 style="margin-bottom: 8px;"><i class="fas fa-robot"></i> Analyse IA</h4><div id="mobile-analysis-result"></div></div><button type="submit" class="mobile-btn"><i class="fas fa-paper-plane"></i> Publier le Signalement</button></form></div><div id="categories-page" class="page"><div style="margin-bottom: 20px;"><button class="mobile-btn mobile-btn-outline" onclick="app.showPage('home')"><i class="fas fa-arrow-left"></i> Retour</button></div><h2 style="margin-bottom: 20px;">Catégories</h2><div class="mobile-categories" id="all-categories"><div class="loading"><div class="spinner"></div></div></div><div id="category-posts-mobile" class="post-list"></div></div><div id="stats-page" class="page"><div style="margin-bottom: 20px;"><button class="mobile-btn mobile-btn-outline" onclick="app.showPage('home')"><i class="fas fa-arrow-left"></i> Retour</button></div><h2 style="margin-bottom: 20px;">Statistiques IA</h2><div class="mobile-card"><h3 style="text-align: center; margin-bottom: 15px;"><i class="fas fa-robot"></i> Analyse Intelligence Artificielle</h3><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"><div style="text-align: center;"><div style="font-size: 1.5rem; color: #667eea;" id="mobile-ai-analyzed">0</div><div style="color: #666; font-size: 0.8rem;">Analyses IA</div></div><div style="text-align: center;"><div style="font-size: 1.5rem; color: #27ae60;" id="mobile-ai-confidence">0%</div><div style="color: #666; font-size: 0.8rem;">Confiance IA</div></div></div></div></div><div id="profile-page" class="page"><div style="margin-bottom: 20px;"><button class="mobile-btn mobile-btn-outline" onclick="app.showPage('home')"><i class="fas fa-arrow-left"></i> Retour</button></div><div class="mobile-card" style="text-align: center;"><div style="width: 80px; height: 80px; background: #e74c3c; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; color: white; font-size: 2rem;"><i class="fas fa-user"></i></div><h3 id="profile-username">Utilisateur</h3><p id="profile-phone" style="color: #666; margin-bottom: 20px;">+243 ...</p><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;"><div><div style="font-weight: bold; font-size: 1.2rem;" id="user-posts">0</div><div style="color: #666; font-size: 0.9rem;">Signalements</div></div><div><div style="font-weight: bold; font-size: 1.2rem;" id="user-comments">0</div><div style="color: #666; font-size: 0.9rem;">Commentaires</div></div></div><button class="mobile-btn mobile-btn-danger" onclick="app.logout()" style="margin-bottom: 10px;"><i class="fas fa-sign-out-alt"></i> Déconnexion</button></div></div></main><nav class="mobile-nav"><a href="#" class="nav-item active" data-page="home"><i class="fas fa-home nav-icon"></i> <span>Accueil</span> </a><a href="#" class="nav-item" data-page="report"><i class="fas fa-flag nav-icon"></i> <span>Signaler</span> </a><a href="#" class="nav-item" data-page="categories"><i class="fas fa-folder nav-icon"></i> <span>Catégories</span> </a><a href="#" class="nav-item" data-page="stats"><i class="fas fa-chart-bar nav-icon"></i> <span>Stats IA</span> </a><a href="#" class="nav-item" data-page="profile"><i class="fas fa-user nav-icon"></i> <span>Profil</span></a></nav><div id="auth-modal" class="mobile-modal" style="display: none;"><div class="modal-content"><div style="text-align: center; margin-bottom: 20px;"><div style="width: 60px; height: 60px; background: #e74c3c; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; color: white; font-size: 1.5rem;"><span class="lance-voix-icon">🗣️</span></div><h3>Connexion</h3><p style="color: #666; font-size: 0.9rem;">Dénonciation RDC avec IA</p></div><form id="login-form"><input type="tel" class="mobile-input" id="login-phone" placeholder="+243 XX XXX XXXX" required> <input class="mobile-input" id="login-code" placeholder="Code de vérification" required> <button type="submit" class="mobile-btn" style="margin-bottom: 15px;"><i class="fas fa-sign-in-alt"></i> Se Connecter</button></form><div style="background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px;"><p style="margin-bottom: 10px; color: #666; text-align: center; font-size: 0.9rem;">Ancien utilisateur sans code?</p><button type="button" class="mobile-btn mobile-btn-outline" id="request-reconnect" style="width: 100%;"><i class="fas fa-sync-alt"></i> Demander un nouveau code</button></div><div style="text-align: center;"><p style="margin-bottom: 10px; color: #666;">Nouveau utilisateur?</p><button class="mobile-btn mobile-btn-outline" onclick="app.showRegister()"><i class="fas fa-user-plus"></i> Créer un compte</button></div></div></div><div id="register-modal" class="mobile-modal" style="display: none;"><div class="modal-content"><div style="text-align: center; margin-bottom: 20px;"><div style="width: 60px; height: 60px; background: #e74c3c; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; color: white; font-size: 1.5rem;"><i class="fas fa-user-plus"></i></div><h3>Inscription</h3><p style="color: #666; font-size: 0.9rem;">Dénonciation RDC avec IA</p></div><form id="register-form"><input type="tel" class="mobile-input" id="reg-phone" placeholder="+243810000000" required> <input class="mobile-input" id="reg-username" placeholder="Nom d'utilisateur" required> <button type="submit" class="mobile-btn" style="margin-bottom: 15px;"><i class="fas fa-user-plus"></i> S'inscrire</button></form><div style="text-align: center;"><button class="mobile-btn mobile-btn-outline" onclick="app.showLogin()"><i class="fas fa-arrow-left"></i> Retour à la connexion</button></div></div></div><div id="code-modal" class="mobile-modal" style="display: none;"><div class="modal-content"><div style="text-align: center; margin-bottom: 20px;"><div style="width: 60px; height: 60px; background: #27ae60; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; color: white; font-size: 1.5rem;"><i class="fas fa-key"></i></div><h3 id="mobile-code-title">Code de Vérification</h3><p style="color: #666;" id="mobile-code-message">Utilisez ce code pour vous connecter</p></div><div style="text-align: center; padding: 1rem;"><div style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;" id="mobile-code-user"></div><div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; border: 2px dashed #3498db; margin: 1rem 0;"><div style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">Votre code:</div><div style="font-size: 2rem; font-weight: bold; color: #e74c3c; letter-spacing: 3px; margin: 1rem 0; font-family: monospace;" id="mobile-code-value"></div><div style="font-size: 0.8rem; color: #e67e22;">⏰ Expire dans 10 minutes</div></div><div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin: 1rem 0;"><button class="mobile-btn" onclick="app.copyCode()"><i class="fas fa-copy"></i> Copier</button> <button class="mobile-btn mobile-btn-outline" onclick="app.returnToLogin()"><i class="fas fa-arrow-left"></i> Connexion</button></div></div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script><script src="bundle.js"></script></body></html>

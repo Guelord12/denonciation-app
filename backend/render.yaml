@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: denonciation-app
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        value: Olgambukula20_2025_Denonciation_RDC_Secure_Key_Change_In_Production
+      - key: DATABASE_URL
+        value: postgresql://denonciation_app_user:PHyAYKulWlMEHsS8Kly0Fcx5nhfxfcQV@dpg-d3n7bmeuk2gs73b6pubg-a.oregon-postgres.render.com/denonciation_app
